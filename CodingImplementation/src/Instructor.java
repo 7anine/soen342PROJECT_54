@@ -4,6 +4,16 @@ public class Instructor {
     private String[] cities;
     private String phone;
     private boolean availability;
+    private Lesson[] assignedLessons;
+
+    public Instructor(String name, String specialization, String[] cities, String phone, boolean availability, Lesson[] assignedLessons) {
+        this.name = name;
+        this.specialization = specialization;
+        this.cities = cities;
+        this.phone = phone;
+        this.availability = availability;
+        this.assignedLessons = assignedLessons;
+    }
 
     public Instructor(String name, String specialization, String[] cities, String phone, boolean availability) {
         this.name = name;
@@ -51,5 +61,13 @@ public class Instructor {
 
     public void setAvailability(boolean availability) {
         this.availability = availability;
+    }
+
+    public Lesson[] getAssignedLessons() {
+        return assignedLessons;
+    }
+
+    public void setAssignedLessons(Lesson[] assignedLessons) {
+        this.assignedLessons = assignedLessons;
     }
 }
