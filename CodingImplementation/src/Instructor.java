@@ -1,4 +1,4 @@
-public class Instructor {
+public class Instructor extends Record {
     private String name;
     private String specialization;
     private String[] cities;
