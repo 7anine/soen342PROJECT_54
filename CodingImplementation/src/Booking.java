@@ -3,7 +3,6 @@ public class Booking extends Record {
     private String clientName;
     private String lessonId;
 
-    // Constructor
     public Booking(String bookingId, String clientName, String lessonId) {
         super();  // Call to parent class constructor if necessary
         this.bookingId = bookingId;
@@ -11,7 +10,6 @@ public class Booking extends Record {
         this.lessonId = lessonId;
     }
 
-    // Accessors (Getters)
     public String getBookingId() {
         return bookingId;
     }
@@ -24,7 +22,6 @@ public class Booking extends Record {
         return lessonId;
     }
 
-    // Mutators (Setters)
     public void setBookingId(String bookingId) {
         this.bookingId = bookingId;
     }

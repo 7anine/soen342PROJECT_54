@@ -3,7 +3,6 @@ public class Client extends Record {
     private int age;
     private String email;
 
-    // Constructor
     public Client(String name, int age, String email) {
         super();  // Call the parent class constructor if necessary
         this.name = name;
@@ -11,7 +10,6 @@ public class Client extends Record {
         this.email = email;
     }
 
-    // Accessors (Getters)
     public String getName() {
         return name;
     }
@@ -24,7 +22,6 @@ public class Client extends Record {
         return email;
     }
 
-    // Mutators (Setters)
     public void setName(String name) {
         this.name = name;
     }
