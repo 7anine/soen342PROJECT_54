@@ -4,7 +4,6 @@ public class Offering extends Record {
     private String lessonId;
     private String instructorId;
 
-    // Constructor
     public Offering(String offeringId, String location, String lessonId, String instructorId) {
         super();  // Call to parent class constructor if necessary
         this.offeringId = offeringId;
@@ -13,7 +12,6 @@ public class Offering extends Record {
         this.instructorId = instructorId;
     }
 
-    // Accessors (Getters)
     public String getOfferingId() {
         return offeringId;
     }
@@ -30,7 +28,6 @@ public class Offering extends Record {
         return instructorId;
     }
 
-    // Mutators (Setters)
     public void setOfferingId(String offeringId) {
         this.offeringId = offeringId;
     }
