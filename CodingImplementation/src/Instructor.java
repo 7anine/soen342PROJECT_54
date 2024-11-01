@@ -1,25 +1,27 @@
-public class Instructor extends Record {
+import java.util.ArrayList;
+
+public class Instructor extends Record implements User{
     private String name;
     private String specialization;
     private String[] cities;
-    private String phone;
+    private String phoneNumber;
     private boolean availability;
     private Lesson[] assignedLessons;
 
-    public Instructor(String name, String specialization, String[] cities, String phone, boolean availability, Lesson[] assignedLessons) {
+    public Instructor(String name, String specialization, String[] cities, String phoneNumber, boolean availability, Lesson[] assignedLessons) {
         this.name = name;
         this.specialization = specialization;
         this.cities = cities;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
         this.availability = availability;
         this.assignedLessons = assignedLessons;
     }
 
-    public Instructor(String name, String specialization, String[] cities, String phone, boolean availability) {
+    public Instructor(String name, String specialization, String[] cities, String phoneNumber, boolean availability) {
         this.name = name;
         this.specialization = specialization;
         this.cities = cities;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
         this.availability = availability;
     }
 
@@ -48,11 +50,11 @@ public class Instructor extends Record {
     }
 
     public String getPhone() {
-        return phone;
+        return phoneNumber;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhone(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public boolean isAvailability() {
@@ -71,4 +73,28 @@ public class Instructor extends Record {
         this.assignedLessons = assignedLessons;
     }
     public void delete(){}
+
+    
+    public void register(String name, String specialization, String phoneNumber, String[] cities) {
+        this.name = name;
+        this.specialization = specialization;
+        this.phoneNumber = phoneNumber;
+        this.cities = cities;  
+
+        // Add to db here
+
+        System.out.println("Instructor registered with the following details:");
+        System.out.println("Name: " + this.name);
+        System.out.println("Specialization: " + this.specialization);
+        System.out.println("Phone Number: " + this.phoneNumber);
+        System.out.print("Available Cities: ");
+        for (String city : this.cities) {
+            System.out.print(city + " ");
+        }
+        System.out.println();
+    }
+
+    public void selectOffering(Offering offering ){
+        //modify the offering in the database to make it availabel to public
+    }
 }
