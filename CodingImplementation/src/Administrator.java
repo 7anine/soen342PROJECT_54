@@ -13,4 +13,18 @@ public class Administrator extends Record {
     public void setAdminId(String adminId) {
         this.adminId = adminId;
     }
+
+    public boolean deleteAccount(User user){
+        if(user instanceof Client){
+            Client client = (Client) user;
+            client.delete();
+            return true;
+        }
+        else if(user instanceof Instructor){
+            Instructor instructor = (Instructor) user;
+            instructor.delete();
+            return true;
+        }
+        return false;
+    }
 }

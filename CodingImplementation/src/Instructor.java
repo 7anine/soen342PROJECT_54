@@ -70,4 +70,5 @@ public class Instructor extends Record {
     public void setAssignedLessons(Lesson[] assignedLessons) {
         this.assignedLessons = assignedLessons;
     }
+    public void delete(){}
 }

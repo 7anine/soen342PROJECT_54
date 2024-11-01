@@ -4,6 +4,9 @@ public class Lesson {
     private Space space;
     private String Privacy;
     private boolean assignedInstructor;
+    private boolean isAvailable;
+    private int capacity;
+    private int numberRegistered;
 
     public Lesson(String type, Schedule schedule, Space space, String privacy, boolean assignedInstructor) {
         this.type = type;
@@ -11,6 +14,10 @@ public class Lesson {
         this.space = space;
         Privacy = privacy;
         this.assignedInstructor = assignedInstructor;
+        this.isAvailable = true;
+        this.capacity = 20;//hard coded for now
+        //need to separate private and public lessons
+        this.numberRegistered = 0;
     }
 
     public String getType() {
@@ -51,5 +58,14 @@ public class Lesson {
 
     public void setAssignedInstructor(boolean assigned) {
         this.assignedInstructor = assigned;
+    }
+    public void clientAdded(){
+        this.numberRegistered++;
+    }
+    public boolean isAvailable(){
+        if(this.capacity<this.numberRegistered){
+            return true;
+        }
+        return false;
     }
 }
