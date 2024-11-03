@@ -34,4 +34,8 @@ public class Client extends Record {
         this.email = email;
     }
 
+    public void delete(){
+        //delete the client from the database
+    }
+
 }
