@@ -5,15 +5,15 @@ public class Instructor extends Record implements User{
     private String specialization;
     private String[] cities;
     private String phoneNumber;
-    private boolean availability;
+    // private boolean availability; not sure how to use that
     private Lesson[] assignedLessons;
+    
 
-    public Instructor(String name, String specialization, String[] cities, String phoneNumber, boolean availability, Lesson[] assignedLessons) {
+    public Instructor(String name, String specialization, String[] cities, String phoneNumber,  Lesson[] assignedLessons) {
         this.name = name;
         this.specialization = specialization;
         this.cities = cities;
         this.phoneNumber = phoneNumber;
-        this.availability = availability;
         this.assignedLessons = assignedLessons;
     }
 
@@ -22,7 +22,6 @@ public class Instructor extends Record implements User{
         this.specialization = specialization;
         this.cities = cities;
         this.phoneNumber = phoneNumber;
-        this.availability = availability;
     }
 
     public String getName() {
@@ -57,13 +56,7 @@ public class Instructor extends Record implements User{
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean isAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(boolean availability) {
-        this.availability = availability;
-    }
+   
 
     public Lesson[] getAssignedLessons() {
         return assignedLessons;
