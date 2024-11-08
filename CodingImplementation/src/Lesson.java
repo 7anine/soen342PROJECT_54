@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 public class Lesson {
     private String type;
     private Schedule schedule;

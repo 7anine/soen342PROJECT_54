@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 public class Offering extends Record {
     private String offeringId;
     private String location;

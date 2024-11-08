@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 public class Space {
     private Location location;
     public Space(Location location) {

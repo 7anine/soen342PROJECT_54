@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -40,8 +42,16 @@ public class Main {
                         // Call your instructor registration method here
                         break;
                     case 4:
-                        System.out.println("Signing in as an admin...");
-                        // Call your admin sign-in method here
+                    System.out.println("Signing in as an admin...");
+                        System.out.print("Enter Admin ID: ");
+                        int enteredId = scanner.nextInt();
+
+                        Administrator admin = new Administrator(enteredId);
+                        if (admin.verifyAdminId(connection, enteredId)) {
+                            admin.adminPanel();
+                        } else {
+                            System.out.println("Incorrect Admin ID. Access Denied.");
+                        }
                         break;
                     case 5:
                         System.out.println("Thank you for using The Lesson Link. Goodbye!");
@@ -49,6 +59,7 @@ public class Main {
                     default:
                         System.out.println("Invalid choice. Please select a valid option.");
                         break;
+
                 }
             } while (choice != 5);
         } catch (SQLException e) {
