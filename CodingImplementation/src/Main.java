@@ -34,11 +34,33 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("Registering as a client...");
-                        // Call your client registration method here
+                        System.out.println("Enter your name:");
+                        String clientName = scanner.nextLine();
+                        System.out.println("Enter your age:");
+                        int clientAge = scanner.nextInt();
+                        System.out.println("Enter your email:");
+                        String clientEmail = scanner.nextLine();
+                        System.out.println("Enter your password:");
+                        String clientPassword = scanner.nextLine();
+
+                        Client newClient = new Client(clientName, clientAge, clientPassword);
+                        newClient.RegisterClientAccountToDB(newClient,clientPassword);
                         break;
                     case 3:
                         System.out.println("Registering as an instructor...");
-                        // Call your instructor registration method here
+                        System.out.println("Enter your name:");
+                        String instructorName = scanner.nextLine();
+                        System.out.println("Enter your specialization:");
+                        String instructorSpecialization = scanner.nextLine();
+                        System.out.println("Enter your phone number:");
+                        String instructorPhone = scanner.nextLine();
+                        System.out.println("Enter the cities that you are available in (separated by commas):");
+                        String instructorCities = scanner.nextLine();
+                        System.out.println("Enter your password:");
+                        String instructorPassword = scanner.nextLine();
+
+                        Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorPhone, instructorCities, null);
+                        newInstructor.register(newInstructor,instructorPassword);
                         break;
                     case 4:
                     System.out.println("Signing in as an admin...");

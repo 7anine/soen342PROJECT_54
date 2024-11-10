@@ -9,6 +9,10 @@ public class Lesson {
     private int capacity;
     private int numberRegistered;
 
+    private int ID;
+    private static int IDincrement =0;
+
+
     public Lesson(String type, Schedule schedule,String location, String privacy, Space space) {
         this.type = type;
         this.schedule = schedule;
@@ -19,6 +23,8 @@ public class Lesson {
         this.capacity = 20;//hard coded for now
         //need to separate private and public lessons
         this.numberRegistered = 0;
+        this.ID = IDincrement;
+        IDincrement++;
     }
 
     public String getType() {

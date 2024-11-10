@@ -1,37 +1,40 @@
 
 public class Booking extends Record {
-    private String bookingId;
+    private String offeringId;
     private String clientName;
-    private String lessonId;
+    private int ID;
+    private static int IDincrement = 0;
 
-    public Booking(String bookingId, String clientName, String lessonId) {
+
+    public Booking(String offeringId, String clientName) {
         super();  // Call to parent class constructor if necessary
-        this.bookingId = bookingId;
+        this.offeringId = offeringId;
         this.clientName = clientName;
-        this.lessonId = lessonId;
+        this.ID = IDincrement;
+        IDincrement++;
     }
 
-    public String getBookingId() {
-        return bookingId;
+    public String getOfferingId() {
+        return offeringId;
     }
 
     public String getClientName() {
         return clientName;
     }
 
-    public String getLessonId() {
-        return lessonId;
+    public int getID() {
+        return ID;
     }
 
-    public void setBookingId(String bookingId) {
-        this.bookingId = bookingId;
+    public void setOfferingId(String offeringId) {
+        this.offeringId = offeringId;
     }
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
 
-    public void setLessonId(String lessonId) {
-        this.lessonId = lessonId;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 }

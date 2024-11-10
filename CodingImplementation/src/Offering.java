@@ -6,24 +6,27 @@ import java.sql.SQLException;
 import database.DatabaseConnection;
 
 public class Offering extends Record {
-    private String offeringId;
-    private String lessonId;
+    private int ID;
+    private int IDincrement =0;
+
+    private int lessonId;
     private String instructorId;
     private boolean isAvailable;
     
 
-    public Offering(String offeringId, String location, String lessonId, String instructorId) {
+    public Offering( String location, int lessonId, String instructorId) {
         super();  // Call to parent class constructor if necessary
-        this.offeringId = offeringId;
         this.lessonId = lessonId;
         this.instructorId = instructorId;
         this.isAvailable = true;
+        this.ID = IDincrement;
+        IDincrement++;
     }
 
-    public String getOfferingId() {
-        return offeringId;
+    public int getOfferingId() {
+        return ID;
     }
-    public String getLessonId() {
+    public int getLessonId() {
         return lessonId;
     }
 
@@ -34,13 +37,13 @@ public class Offering extends Record {
         return isAvailable;
     }
 
-    public void setOfferingId(String offeringId) {
-        this.offeringId = offeringId;
+    public void setOfferingId(int offeringId) {
+        this.ID = offeringId;
     }
 
     
 
-    public void setLessonId(String lessonId) {
+    public void setLessonId(int lessonId) {
         this.lessonId = lessonId;
     }
 

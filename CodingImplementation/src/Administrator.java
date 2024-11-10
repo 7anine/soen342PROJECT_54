@@ -5,19 +5,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Administrator extends Record {
-    private int adminId;  // Unique identifier for the administrator
+    private int ID;  // Unique identifier for the administrator
+    private static int IDincrement = 0;
 
     public Administrator(int adminId) {
           // Call to parent class constructor if necessary
-        this.adminId = adminId;
+        this.ID = adminId;
+        this.ID = IDincrement;
+        IDincrement++;
     }
 
-    public int getAdminId() {
-        return adminId;
+    public int getID() {
+        return ID;
     }
 
-    public void setAdminId(int adminId) {
-        this.adminId = adminId;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public boolean deleteAccount(User user){
