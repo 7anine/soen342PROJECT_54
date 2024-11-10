@@ -4,19 +4,19 @@ public class Lesson {
     private String type;
     private Schedule schedule;
     private Space space;
-    private String Privacy;
+    private String privacy;
+    private String location;
     private boolean assignedInstructor;
-    private boolean isAvailable;
     private int capacity;
     private int numberRegistered;
 
-    public Lesson(String type, Schedule schedule, Space space, String privacy, boolean assignedInstructor) {
+    public Lesson(String type, Schedule schedule,String location, String privacy, Space space) {
         this.type = type;
         this.schedule = schedule;
         this.space = space;
-        Privacy = privacy;
-        this.assignedInstructor = assignedInstructor;
-        this.isAvailable = true;
+        this.privacy = privacy;
+        this.location = location;
+        this.assignedInstructor = false;
         this.capacity = 20;//hard coded for now
         //need to separate private and public lessons
         this.numberRegistered = 0;
@@ -47,17 +47,23 @@ public class Lesson {
     }
 
     public String getPrivacy() {
-        return Privacy;
+        return privacy;
     }
 
     public void setPrivacy(String privacy) {
-        Privacy = privacy;
+        this.privacy = privacy;
     }
 
     public boolean isAssignedInstructor() {
         return assignedInstructor;
     }
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
+    public String getLocation() {
+        return location;
+    }
     public void setAssignedInstructor(boolean assigned) {
         this.assignedInstructor = assigned;
     }
