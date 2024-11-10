@@ -3,7 +3,7 @@ package CodingImplementation.src;
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.SQLException;
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 
 public class Main {
@@ -61,7 +61,7 @@ public class Main {
                         String instructorPassword = scanner.nextLine();
 
                         Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorPhone, instructorCities, null);
-                        newInstructor.register(newInstructor,instructorPassword);
+                        //newInstructor.register(newInstructor,instructorPassword);
                         break;
                     case 4:
                     System.out.println("Signing in as an admin...");

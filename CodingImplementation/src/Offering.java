@@ -3,8 +3,8 @@ package CodingImplementation.src;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import CodingImplementation.src.database.DatabaseConnection;
 
-import database.DatabaseConnection;
 
 public class Offering extends Record {
     private int ID;

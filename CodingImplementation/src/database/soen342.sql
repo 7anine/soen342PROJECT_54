@@ -35,7 +35,7 @@ CREATE TABLE Instructor (
 CREATE TABLE Booking (
     bookingId INT PRIMARY KEY ,
     clientId INT,
-    lessonId INT,
+    offeringId INT,
     FOREIGN KEY (clientId) REFERENCES Client(clientId)
 );
 
@@ -90,9 +90,19 @@ CREATE TABLE Location (
 
 
 ALTER TABLE Booking
-ADD FOREIGN KEY (lessonId) REFERENCES Lesson(lessonId);
+ADD FOREIGN KEY (offerindId) REFERENCES Offering(offerindId);
 
 ALTER TABLE Schedule
 ADD FOREIGN KEY (locationID) REFERENCES Location(locationID);
 
+-- When an offering is deleted, all related bookings are also deleted
+ALTER TABLE Booking
+ADD CONSTRAINT fk_offering
+FOREIGN KEY (offeringId) REFERENCES Offering(offeringId)
+ON DELETE CASCADE;
+
+ALTER TABLE Client
+ADD COLUMN password VARCHAR(255) NOT NULL;
+
 -- DROP DATABASE soen342;
+

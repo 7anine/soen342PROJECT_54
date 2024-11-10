@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 import java.util.Scanner;
 
 public class Client extends Record {

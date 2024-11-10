@@ -1,3 +1,6 @@
+package CodingImplementation.src;
+import CodingImplementation.src.database.DatabaseConnection;
+
 
 import java.util.ArrayList;
 
@@ -8,6 +11,8 @@ public class Instructor extends Record implements User{
     private String phoneNumber;
     // private boolean availability; not sure how to use that
     private Lesson[] assignedLessons;
+    private int ID;  // Unique identifier for the administrator
+    private static int IDincrement = 0;
     
 
     public Instructor(String name, String specialization, String cities, String phoneNumber,  Lesson[] assignedLessons) {
@@ -16,6 +21,8 @@ public class Instructor extends Record implements User{
         this.cities = cities;
         this.phoneNumber = phoneNumber;
         this.assignedLessons = assignedLessons;
+        this.ID = IDincrement;
+        IDincrement++;
     }
 
     public Instructor(String name, String specialization, String cities, String phoneNumber, boolean availability) {
