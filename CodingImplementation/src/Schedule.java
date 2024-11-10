@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 public class Schedule {
     private String day;

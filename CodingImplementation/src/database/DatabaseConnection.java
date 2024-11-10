@@ -1,4 +1,4 @@
-package CodingImplementation.database;
+package database;
 //package database;
 
 import java.sql.Connection;

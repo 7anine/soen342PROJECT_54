@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 public class Client extends Record {
     private String name;

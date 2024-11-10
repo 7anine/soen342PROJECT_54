@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 public class Location {
     private String name;

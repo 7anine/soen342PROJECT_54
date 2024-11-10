@@ -1,6 +1,6 @@
 -- This SQL File creates all the tables necessary for our projects.
 -- Create database
--- CREATE DATABASE soen342;
+CREATE DATABASE soen342;
 
 -- Use the created database
 USE soen342;
