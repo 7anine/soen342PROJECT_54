@@ -1,5 +1,4 @@
-package database;
-//package database;
+package CodingImplementation.src.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

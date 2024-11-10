@@ -75,10 +75,9 @@ CREATE TABLE Offering (
     offeringId INT PRIMARY KEY,
     lessonId INT,
     clientId INT,
-    scheduleId INT,
+    isAvailable BOOLEAN,
     FOREIGN KEY (lessonId) REFERENCES Lesson(lessonId), 
     FOREIGN KEY (clientId) REFERENCES Client(clientId),
-    FOREIGN KEY (scheduleId) REFERENCES Schedule(scheduleId)
 );
 
 -- Table for Location

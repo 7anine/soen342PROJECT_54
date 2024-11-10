@@ -9,13 +9,12 @@ import CodingImplementation.src.database.DatabaseConnection;
 public class Offering extends Record {
     private int ID;
     private int IDincrement =0;
-
     private int lessonId;
-    private String instructorId;
+    private int instructorId;
     private boolean isAvailable;
     
 
-    public Offering( String location, int lessonId, String instructorId) {
+    public Offering( String location, int lessonId, int instructorId) {
         super();  // Call to parent class constructor if necessary
         this.lessonId = lessonId;
         this.instructorId = instructorId;
@@ -31,7 +30,7 @@ public class Offering extends Record {
         return lessonId;
     }
 
-    public String getInstructorId() {
+    public int getInstructorId() {
         return instructorId;
     }
     public boolean getIsAvailable() {
@@ -42,42 +41,52 @@ public class Offering extends Record {
         this.ID = offeringId;
     }
 
-    
 
-    public void setLessonId(int lessonId) {
-        this.lessonId = lessonId;
-    }
-
-    public void setInstructorId(String instructorId) {
-        this.instructorId = instructorId;
-    }
     public void setAvailability(boolean isAvailable){
         this.isAvailable = isAvailable;
     }
+    
 
-    public void addOfferingToDB(int lessonID, int instructorID) {
-        String insertQuery = "INSERT INTO Offering (lessonId, instructorId) VALUES (?, ?)";
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+    public void addOfferingToDB(Offering offering) {
+        String insertQuery = "INSERT INTO Offering (ID, lessonId, instructorId, isAvailable) VALUES (?, ?, ?, ?)";
 
-            statement.setInt(1, lessonID);
-            statement.setInt(2, instructorID);
+        // Establish a connection using the DatabaseConnection class
+        try (Connection connection = DatabaseConnection.getConnection(); 
+             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
 
-            int rowsAffected = statement.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Offering added to the database successfully.");
-            } else {
-                System.out.println("Failed to add the offering.");
-            }
+            // Set the values of the query parameters
+            preparedStatement.setInt(1, offering.getOfferingId());
+            preparedStatement.setInt(2, offering.getLessonId());
+            preparedStatement.setInt(3, offering.getInstructorId());
+            preparedStatement.setBoolean(4, offering.getIsAvailable());
 
+            // Execute the insert query
+            preparedStatement.executeUpdate();
+            System.out.println("Offering added to the database successfully.");
         } catch (SQLException e) {
-            System.err.println("Error adding offering to the database: " + e.getMessage());
+            e.printStackTrace();
+            System.out.println("Error while adding offering to database.");
         }
     }
 
-    public void deleteOfferingByID(Integer offeringID){
+    public void deleteOfferingByID(int offeringID){
+        String deleteOfferingSQL = "DELETE FROM Offering WHERE offeringId = ?";
 
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(deleteOfferingSQL)) {
+
+            preparedStatement.setInt(1, offeringID);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Offering and associated bookings deleted successfully.");
+            } else {
+                System.out.println("Offering not found.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting offering: " + e.getMessage());
+        }
     }
     
 }
