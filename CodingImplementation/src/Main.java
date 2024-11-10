@@ -1,5 +1,3 @@
-package CodingImplementation.src;
-
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,8 +28,28 @@ public class Main {
 
                 switch (choice) {
                     case 1:
-                        System.out.println("Signing in...");
-                        // Call your sign-in method here
+                        System.out.println("Sign In As: ");
+                        System.out.println("1. Client");
+                        System.out.println("2. Instructor");
+
+                        System.out.print("Enter your choice (1 or 2): ");
+                        int signInAs = scanner.nextInt();
+                        switch (signInAs) {
+                            case 1:
+                                System.out.print("Enter Client name: ");
+                                int clientID = scanner.nextInt();
+                                System.out.print("Enter Client Password: ");
+                                int clientPassword = scanner.nextInt();
+                                Client.clientSignIn(clientID, clientPassword);
+                                break;
+                            case 2:
+                                System.out.print("Enter Instructor name: ");
+                                int instructorID = scanner.nextInt();
+                                System.out.print("Enter Instructor Password: ");
+                                int instructorPassword = scanner.nextInt();
+                                Instructor.instructorSignIn(instructorID, instructorPassword);
+                                break;
+                        }
                         break;
                     case 2:
                         System.out.println("Registering as a client...");
@@ -44,8 +62,7 @@ public class Main {
                         System.out.println("Enter your password:");
                         String clientPassword = scanner.nextLine();
 
-                        Client newClient = new Client(clientName, clientAge, clientPassword);
-                        newClient.RegisterClientAccountToDB(newClient,clientPassword);
+                        Client.CreateClientAccount(clientName, clientAge, clientEmail, clientPassword);
                         break;
                     case 3:
                         System.out.println("Registering as an instructor...");
@@ -61,7 +78,7 @@ public class Main {
                         String instructorPassword = scanner.nextLine();
 
                         Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorPhone, instructorCities, null);
-                        //newInstructor.register(newInstructor,instructorPassword);
+                        newInstructor.register(newInstructor,instructorPassword);
                         break;
                     case 4:
                     System.out.println("Signing in as an admin...");
@@ -81,7 +98,6 @@ public class Main {
                     default:
                         System.out.println("Invalid choice. Please select a valid option.");
                         break;
-
                 }
             } while (choice != 5);
         } catch (SQLException e) {

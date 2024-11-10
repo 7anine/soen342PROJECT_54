@@ -2,6 +2,12 @@ package CodingImplementation.src;
 import CodingImplementation.src.database.DatabaseConnection;
 
 
+import database.DatabaseConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Instructor extends Record implements User{
@@ -76,13 +82,13 @@ public class Instructor extends Record implements User{
     public void delete(){}
 
     
-    public void register(String name, String specialization, String phoneNumber, String cities) {
-        this.name = name;
-        this.specialization = specialization;
-        this.phoneNumber = phoneNumber;
-        this.cities = cities;  
+    public void CreateinstructorAccount(Instructor instructor) {
+        this.name = instructor.getName();
+        this.specialization = instructor.getSpecialization();
+        this.phoneNumber = instructor.getPhone();
+        this.cities = instructor.getCities();
 
-        // Add to db here
+        // TODO: Add to db here
 
         System.out.println("Instructor registered with the following details:");
         System.out.println("Name: " + this.name);
@@ -95,5 +101,36 @@ public class Instructor extends Record implements User{
 
     public void selectOffering(Offering offering ){
         //modify the offering in the database to make it availabel to public
+    }
+
+    public static boolean instructorSignIn(int instructorID, int instructorPassword) {
+        String selectQuery = "SELECT password FROM Instructor WHERE instructorId = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(selectQuery)) {
+
+            statement.setInt(1, instructorID);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String storedPassword = resultSet.getString("password");
+
+                    // Check if the password matches
+                    if (storedPassword.equals(Integer.toString(instructorPassword))) {
+                        System.out.println("Sign-in successful.");
+                        return true;
+                    } else {
+                        System.out.println("Incorrect password.");
+                    }
+                } else {
+                    System.out.println("Instructor ID not found.");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error during instructor sign-in: " + e.getMessage());
+        }
+
+        return false;
     }
 }
