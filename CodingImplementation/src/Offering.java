@@ -3,7 +3,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+<<<<<<< HEAD
 import database.DatabaseConnection;
+=======
+import CodingImplementation.src.database.DatabaseConnection;
+>>>>>>> yasmine
 
 public class Offering extends Record {
     private String offeringId;

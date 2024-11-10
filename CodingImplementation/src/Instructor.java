@@ -4,13 +4,13 @@ import java.util.ArrayList;
 public class Instructor extends Record implements User{
     private String name;
     private String specialization;
-    private String[] cities;
+    private String cities;
     private String phoneNumber;
     // private boolean availability; not sure how to use that
     private Lesson[] assignedLessons;
     
 
-    public Instructor(String name, String specialization, String[] cities, String phoneNumber,  Lesson[] assignedLessons) {
+    public Instructor(String name, String specialization, String cities, String phoneNumber,  Lesson[] assignedLessons) {
         this.name = name;
         this.specialization = specialization;
         this.cities = cities;
@@ -18,7 +18,7 @@ public class Instructor extends Record implements User{
         this.assignedLessons = assignedLessons;
     }
 
-    public Instructor(String name, String specialization, String[] cities, String phoneNumber, boolean availability) {
+    public Instructor(String name, String specialization, String cities, String phoneNumber, boolean availability) {
         this.name = name;
         this.specialization = specialization;
         this.cities = cities;
@@ -41,11 +41,11 @@ public class Instructor extends Record implements User{
         this.specialization = specialization;
     }
 
-    public String[] getCities() {
+    public String getCities() {
         return cities;
     }
 
-    public void setCities(String[] cities) {
+    public void setCities(String cities) {
         this.cities = cities;
     }
 
@@ -69,7 +69,7 @@ public class Instructor extends Record implements User{
     public void delete(){}
 
     
-    public void register(String name, String specialization, String phoneNumber, String[] cities) {
+    public void register(String name, String specialization, String phoneNumber, String cities) {
         this.name = name;
         this.specialization = specialization;
         this.phoneNumber = phoneNumber;
@@ -82,9 +82,7 @@ public class Instructor extends Record implements User{
         System.out.println("Specialization: " + this.specialization);
         System.out.println("Phone Number: " + this.phoneNumber);
         System.out.print("Available Cities: ");
-        for (String city : this.cities) {
-            System.out.print(city + " ");
-        }
+        System.out.print(cities);
         System.out.println();
     }
 
