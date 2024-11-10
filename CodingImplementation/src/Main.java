@@ -1,9 +1,11 @@
 package CodingImplementation.src;
 
 import java.util.Scanner;
+
+import CodingImplementation.src.database.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.SQLException;
-import CodingImplementation.database.DatabaseConnection;
 
 
 public class Main {

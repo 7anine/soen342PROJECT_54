@@ -1,6 +1,6 @@
 -- This SQL File creates all the tables necessary for our projects.
 -- Create database
--- CREATE DATABASE soen342;
+CREATE DATABASE soen342;
 
 -- Use the created database
 USE soen342;
@@ -8,12 +8,12 @@ USE soen342;
 -- Table for Administrator
 CREATE TABLE
  Administrator (
-    adminId INT PRIMARY KEY AUTO_INCREMENT
+    adminId INT PRIMARY KEY
 );
 
 -- Table for Client
 CREATE TABLE Client (
-    clientId INT PRIMARY KEY AUTO_INCREMENT,
+    clientId INT PRIMARY KEY,
     name VARCHAR(50),
     age INT,
     email VARCHAR(100),
@@ -24,7 +24,7 @@ CREATE TABLE Client (
 
 -- Table for Instructor
 CREATE TABLE Instructor (
-    instructorId INT PRIMARY KEY AUTO_INCREMENT,
+    instructorId INT PRIMARY KEY,
     name VARCHAR(50),
     phoneNumber VARCHAR(15),
     specialization VARCHAR(50),
@@ -33,7 +33,7 @@ CREATE TABLE Instructor (
 
 -- Table for Booking
 CREATE TABLE Booking (
-    bookingId INT PRIMARY KEY AUTO_INCREMENT,
+    bookingId INT PRIMARY KEY ,
     clientId INT,
     lessonId INT,
     FOREIGN KEY (clientId) REFERENCES Client(clientId)
@@ -42,14 +42,14 @@ CREATE TABLE Booking (
 use soen342;
 -- Table for Schedule
 CREATE TABLE Schedule (
-    scheduleId INT PRIMARY KEY AUTO_INCREMENT,
+    scheduleId INT PRIMARY KEY,
     date DATE, 
     locationId INT
 );
 
 -- Table for Space
 CREATE TABLE Space (
-    spaceId INT PRIMARY KEY AUTO_INCREMENT,
+    spaceId INT PRIMARY KEY,
     city VARCHAR(50),
     scheduleId INT,
     FOREIGN KEY (scheduleId) REFERENCES Schedule(scheduleId)
@@ -57,7 +57,7 @@ CREATE TABLE Space (
 
 -- Table for lessons
 CREATE TABLE Lesson (
-    lessonId INT AUTO_INCREMENT PRIMARY KEY,
+    lessonId INT PRIMARY KEY,
     type VARCHAR(50) NOT NULL, 
     scheduleId INT NOT NULL, 
     spaceId INT NOT NULL, 
@@ -72,7 +72,7 @@ CREATE TABLE Lesson (
 );
 -- Table for Offering
 CREATE TABLE Offering (
-    offeringId INT PRIMARY KEY AUTO_INCREMENT,
+    offeringId INT PRIMARY KEY,
     lessonId INT,
     clientId INT,
     scheduleId INT,
@@ -83,7 +83,7 @@ CREATE TABLE Offering (
 
 -- Table for Location
 CREATE TABLE Location (
-    locationId INT PRIMARY KEY AUTO_INCREMENT,
+    locationId INT PRIMARY KEY,
     scheduleId INT,
     FOREIGN KEY (scheduleId) REFERENCES Schedule(scheduleId)
 );
@@ -94,3 +94,5 @@ ADD FOREIGN KEY (lessonId) REFERENCES Lesson(lessonId);
 
 ALTER TABLE Schedule
 ADD FOREIGN KEY (locationID) REFERENCES Location(locationID);
+
+-- DROP DATABASE soen342;

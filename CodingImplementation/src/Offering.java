@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import CodingImplementation.database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Offering extends Record {
     private String offeringId;
