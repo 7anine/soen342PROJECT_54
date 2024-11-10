@@ -1,3 +1,4 @@
+package CodingImplementation.src;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -73,6 +74,10 @@ public class Offering extends Record {
         } catch (SQLException e) {
             System.err.println("Error adding offering to the database: " + e.getMessage());
         }
+    }
+
+    public void deleteOfferingByID(Integer offeringID){
+
     }
     
 }
