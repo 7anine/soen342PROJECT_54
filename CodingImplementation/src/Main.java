@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 import java.util.Scanner;
 import java.sql.Connection;
@@ -43,13 +42,15 @@ public class Main {
                                 System.out.print("Enter Client Password: ");
                                 int clientPassword = scanner.nextInt();
                                 Client.clientSignIn(clientID, clientPassword);
+                                //TODO: if successful, fetch client fields from db, create new client object and go to clientPortal
                                 break;
                             case 2:
                                 System.out.print("Enter Instructor name: ");
                                 int instructorID = scanner.nextInt();
                                 System.out.print("Enter Instructor Password: ");
                                 int instructorPassword = scanner.nextInt();
-                                //Instructor.instructorSignIn(instructorID, instructorPassword);
+                                Instructor.instructorSignIn(instructorID, instructorPassword);
+                                //TODO: if successful, fetch instructor fields from db, create new instructor object and go to instructorPortal
                                 break;
                         }
                         break;
@@ -64,7 +65,9 @@ public class Main {
                         System.out.println("Enter your password:");
                         String clientPassword = scanner.nextLine();
 
-                        Client.CreateClientAccount(clientName, clientAge, clientEmail, clientPassword);
+                        Client newClient = new Client(clientName, clientAge, clientEmail);
+                        newClient.createClientAccount(newClient, clientPassword);
+                        newClient.clientPortal();
                         break;
                     case 3:
                         System.out.println("Registering as an instructor...");
@@ -80,7 +83,8 @@ public class Main {
                         String instructorPassword = scanner.nextLine();
 
                         Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorPhone, instructorCities, null);
-                        //newInstructor.register(newInstructor,instructorPassword);
+                        newInstructor.createInstructorAccount(newInstructor,instructorPassword);
+                        newInstructor.instructorPortal();
                         break;
                     case 4:
                     System.out.println("Signing in as an admin...");
@@ -97,6 +101,12 @@ public class Main {
                     case 5:
                         System.out.println("Thank you for using The Lesson Link. Goodbye!");
                         break;
+                    case 6:
+                        System.out.println("Testing the following method: _______ instructor portal _______");
+                        //Client hanine = new Client("Hanine", 20, "h@gmail.com");
+                        //hanine.clientPortal();
+                        Instructor hanine = new Instructor("Hanine", "Pilates", "Montreal, Laval", "514-000-0000", true);
+                        hanine.instructorPortal();
                     default:
                         System.out.println("Invalid choice. Please select a valid option.");
                         break;

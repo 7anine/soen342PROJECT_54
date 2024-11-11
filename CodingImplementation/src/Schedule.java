@@ -1,9 +1,8 @@
-package CodingImplementation.src;
 
 
 public class Schedule {
     private int ID;
-    private int IDincrement=0;
+    private int IDincrement = 1;
     private String day;
     private String time;
 
@@ -12,6 +11,13 @@ public class Schedule {
         this.time = time;
         this.ID = IDincrement;
         IDincrement++;
+    }
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getDay() {

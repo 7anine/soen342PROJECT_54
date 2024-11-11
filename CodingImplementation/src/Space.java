@@ -1,10 +1,9 @@
-package CodingImplementation.src;
 
 
 public class Space {
 
     private int ID;
-    private int IDincrement=0;
+    private int IDincrement = 1;
     private Location location;
     public Space(Location location) {
         this.location = location;
@@ -20,4 +19,11 @@ public class Space {
     }
 
 
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 }

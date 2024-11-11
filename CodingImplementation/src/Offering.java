@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +7,7 @@ import CodingImplementation.src.database.DatabaseConnection;
 
 public class Offering extends Record {
     private int ID;
-    private int IDincrement =0;
+    private int IDincrement = 1;
     private int lessonId;
     private int instructorId;
     private boolean isAvailable;

@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +15,7 @@ public class Lesson {
     private int capacity;
     private int numberRegistered;
     private int ID;
-    private static int IDincrement =0;
+    private static int IDincrement = 1;
 
 
     public Lesson(String type, int scheduleId,int locationId, String privacy, int spaceId, int capacity) {
