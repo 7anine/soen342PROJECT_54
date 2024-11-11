@@ -1,6 +1,6 @@
 -- This SQL File creates all the tables necessary for our projects.
 -- Create database
-CREATE DATABASE soen342;
+--CREATE DATABASE soen342;
 
 -- Use the created database
 USE soen342;
@@ -59,17 +59,18 @@ CREATE TABLE Space (
 CREATE TABLE Lesson (
     lessonId INT PRIMARY KEY,
     type VARCHAR(50) NOT NULL, 
-    scheduleId INT NOT NULL, 
-    spaceId INT NOT NULL, 
+    scheduleId INT , 
+    spaceId INT , 
+    locationId INT,
     privacy ENUM('Private', 'Public') NOT NULL, 
     instructorId INT, 
     isAvailable BOOLEAN NOT NULL DEFAULT TRUE, 
-    capacity INT NOT NULL, 
+    capacity INT, 
     numberRegistered INT DEFAULT 0, 
     FOREIGN KEY (scheduleId) REFERENCES Schedule(scheduleId), 
     FOREIGN KEY (spaceId) REFERENCES Space(spaceId),
-    FOREIGN KEY (instructorId) REFERENCES Instructor(instructorId) -- Foreign key relationship to Instructor
-);
+    FOREIGN KEY (instructorId) REFERENCES Instructor(instructorId)
+    );
 -- Table for Offering
 CREATE TABLE Offering (
     offeringId INT PRIMARY KEY,
@@ -77,22 +78,24 @@ CREATE TABLE Offering (
     clientId INT,
     isAvailable BOOLEAN,
     FOREIGN KEY (lessonId) REFERENCES Lesson(lessonId), 
-    FOREIGN KEY (clientId) REFERENCES Client(clientId),
+    FOREIGN KEY (clientId) REFERENCES Client(clientId)
 );
 
 -- Table for Location
 CREATE TABLE Location (
     locationId INT PRIMARY KEY,
-    scheduleId INT,
-    FOREIGN KEY (scheduleId) REFERENCES Schedule(scheduleId)
+    locationName VARCHAR(50),
 );
 
 
 ALTER TABLE Booking
-ADD FOREIGN KEY (offerindId) REFERENCES Offering(offerindId);
+ADD FOREIGN KEY (offeringId) REFERENCES Offering(offeringId);
 
 ALTER TABLE Schedule
 ADD FOREIGN KEY (locationID) REFERENCES Location(locationID);
+
+ALTER TABLE Lesson
+ADD FOREIGN KEY (locationId) REFERENCES Location(locationId);
 
 -- When an offering is deleted, all related bookings are also deleted
 ALTER TABLE Booking
@@ -103,5 +106,57 @@ ON DELETE CASCADE;
 ALTER TABLE Client
 ADD COLUMN password VARCHAR(255) NOT NULL;
 
+
+INSERT INTO Administrator (adminId) VALUES (12345); --Set admin Id
+
+
+
+USE soen342;
+
+INSERT INTO Location (locationId, scheduleId, locationName)
+VALUES 
+(1, 'Building A - Room 101'),
+(2, 'Building A - Room 102'),
+(3, 'Building B - Room 201'),
+(4, 'Building B - Room 202'),
+(5,  'Building C - Room 301'),
+(6, 'Building C - Room 302'),
+(7, 'Library - Meeting Room'),
+(8, 'Auditorium A'),
+(9, 'Auditorium B'),
+(10,'Outdoor Patio');
+
+
+
+INSERT INTO Schedule (scheduleId, date, locationId)
+VALUES 
+(1, '2024-11-01', 1),
+(2, '2024-11-02', 2),
+(3, '2024-11-03', 3),
+(4, '2024-11-04', 4),
+(5, '2024-11-05', 5),
+(6, '2024-11-06', 6),
+(7, '2024-11-07', 7),
+(8, '2024-11-08', 8),
+(9, '2024-11-09', 9),
+(10, '2024-11-10', 10);
+
+
+INSERT INTO Space (spaceId, city, scheduleId)
+VALUES 
+(1, 'New York', 1),
+(2, 'Los Angeles', 2),
+(3, 'Chicago', 3),
+(4, 'Miami', 4),
+(5, 'San Francisco', 5),
+(6, 'Dallas', 6),
+(7, 'Houston', 7),
+(8, 'Seattle', 8),
+(9, 'Boston', 9),
+(10, 'Washington, D.C.', 10);
+
+
+USE soen342;
+SELECT * FROM Location;
 -- DROP DATABASE soen342;
 

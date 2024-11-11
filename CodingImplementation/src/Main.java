@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -47,7 +49,7 @@ public class Main {
                                 int instructorID = scanner.nextInt();
                                 System.out.print("Enter Instructor Password: ");
                                 int instructorPassword = scanner.nextInt();
-                                Instructor.instructorSignIn(instructorID, instructorPassword);
+                                //Instructor.instructorSignIn(instructorID, instructorPassword);
                                 break;
                         }
                         break;
@@ -78,7 +80,7 @@ public class Main {
                         String instructorPassword = scanner.nextLine();
 
                         Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorPhone, instructorCities, null);
-                        newInstructor.register(newInstructor,instructorPassword);
+                        //newInstructor.register(newInstructor,instructorPassword);
                         break;
                     case 4:
                     System.out.println("Signing in as an admin...");

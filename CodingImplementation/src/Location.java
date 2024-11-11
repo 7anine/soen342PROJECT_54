@@ -2,19 +2,15 @@ package CodingImplementation.src;
 
 
 public class Location {
-    private String name;
-    private String city;
+    private int locationId;
+    private int scheduleId;
+    private String locationName;
     
-    public Location(String name, String city) {
-        this.name = name;
-        this.city = city;
-    }
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    
+    public Location(String locationName, int scheduleId, int locationId) {
+        this.locationName = locationName;
+        this.scheduleId = scheduleId;
+        this.locationId = locationId;
     }
 
 

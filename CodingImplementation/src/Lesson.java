@@ -1,29 +1,32 @@
 package CodingImplementation.src;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Lesson {
     private String type;
-    private Schedule schedule;
-    private Space space;
+    private int scheduleId;
+    private int spaceId;
     private String privacy;
-    private String location;
+    private int locationId;
     private boolean assignedInstructor;
     private int capacity;
     private int numberRegistered;
-
     private int ID;
     private static int IDincrement =0;
 
 
-    public Lesson(String type, Schedule schedule,String location, String privacy, Space space) {
+    public Lesson(String type, int scheduleId,int locationId, String privacy, int spaceId, int capacity) {
         this.type = type;
-        this.schedule = schedule;
-        this.space = space;
+        this.scheduleId = scheduleId;
+        this.spaceId = spaceId;
         this.privacy = privacy;
-        this.location = location;
+        this.locationId = locationId;
         this.assignedInstructor = false;
-        this.capacity = 20;//hard coded for now
-        //need to separate private and public lessons
+        this.capacity = capacity;
         this.numberRegistered = 0;
         this.ID = IDincrement;
         IDincrement++;
@@ -37,20 +40,20 @@ public class Lesson {
         this.type = type;
     }
 
-    public Schedule getSchedule() {
-        return schedule;
+    public int getScheduleId() {
+        return scheduleId;
     }
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+    public void setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
     }
 
-    public Space getSpace() {
-        return space;
+    public int getSpacId() {
+        return spaceId;
     }
 
-    public void setSpace(Space space) {
-        this.space = space;
+    public void setSpaceId(int spaceId) {
+        this.spaceId = spaceId;
     }
 
     public String getPrivacy() {
@@ -64,12 +67,12 @@ public class Lesson {
     public boolean isAssignedInstructor() {
         return assignedInstructor;
     }
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocation(int locationId) {
+        this.locationId = locationId;
     }
 
-    public String getLocation() {
-        return location;
+    public int getLocationId() {
+        return locationId;
     }
     public void setAssignedInstructor(boolean assigned) {
         this.assignedInstructor = assigned;
@@ -82,5 +85,45 @@ public class Lesson {
             return true;
         }
         return false;
+    }
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+    public int getCapacity() {
+        return capacity;
+    }
+    // Method to create a lesson
+    public void createLesson() {
+        // Add the lesson to the database
+        addLessonToDB(this);  
+        System.out.println("Lesson Created: " + type + " (Schedule ID: " + scheduleId + ", Location ID: " + locationId + 
+                        ", Privacy: " + privacy + ", Space ID: " + spaceId + ")");
+    }
+
+    public void addLessonToDB(Lesson lesson){
+        String insertQuery = "INSERT INTO Lesson (lessonId, type, scheduleId, spaceId, locationId, privacy, capacity) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection connection = DatabaseConnection.getConnection(); 
+             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+             
+            // Set parameters for the query
+            preparedStatement.setInt(1, lesson.ID);
+            preparedStatement.setString(2, lesson.type);
+            preparedStatement.setInt(3, lesson.scheduleId);
+            preparedStatement.setInt(4, lesson.spaceId);
+            preparedStatement.setInt(5, lesson.locationId);
+            preparedStatement.setString(6, lesson.privacy);
+            preparedStatement.setInt(7, lesson.capacity);
+            
+            // Execute the query
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Lesson added to the database successfully!");
+            } else {
+                System.out.println("Failed to add lesson to the database.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error adding lesson to database: " + e.getMessage());
+        }
     }
 }
