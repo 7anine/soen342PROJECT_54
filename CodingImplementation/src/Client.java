@@ -268,13 +268,11 @@ public class Client extends Record {
             while (resultSet.next()) {
                 int offeringId = resultSet.getInt("offeringId");
                 int lessonId = resultSet.getInt("lessonId");
-                int clientId = resultSet.getInt("clientId");
-                int scheduleId = resultSet.getInt("scheduleId");
+                int instructorId = resultSet.getInt("instructorId");
 
                 System.out.println("Offering ID: " + offeringId);
                 System.out.println("Lesson ID: " + lessonId);
-                System.out.println("Client ID: " + clientId);
-                System.out.println("Schedule ID: " + scheduleId);
+                System.out.println("instructor ID: " + instructorId);
                 System.out.println("--------------------------");
 
                 offeringsFound = true;
@@ -309,7 +307,7 @@ public class Client extends Record {
     }
 
     private void addBookingToDatabase(Booking booking) {
-        String insertQuery = "INSERT INTO Booking (bookingId, clientId, lessonId) VALUES (?, ?, ?)";
+        String insertQuery = "INSERT INTO Booking (bookingId, clientId, offeringId) VALUES (?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(insertQuery)) {

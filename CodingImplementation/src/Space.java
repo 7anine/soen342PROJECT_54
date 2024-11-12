@@ -3,7 +3,7 @@
 public class Space {
 
     private int ID;
-    private int IDincrement = 1;
+    private static int IDincrement = 1;
     private Location location;
     public Space(Location location) {
         this.location = location;

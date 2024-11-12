@@ -2,7 +2,7 @@
 
 public class Schedule {
     private int ID;
-    private int IDincrement = 1;
+    private static int IDincrement = 1;
     private String day;
     private String time;
 

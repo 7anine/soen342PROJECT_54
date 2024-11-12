@@ -103,10 +103,13 @@ public class Main {
                         break;
                     case 6:
                         System.out.println("Testing the following method: _______ instructor portal _______");
-                        //Client hanine = new Client("Hanine", 20, "h@gmail.com");
-                        //hanine.clientPortal();
-                        Instructor hanine = new Instructor("Hanine", "Pilates", "Montreal, Laval", "514-000-0000", true);
-                        hanine.instructorPortal();
+                        Client hanine = new Client("Hanine", 20, "h@gmail.com");
+                        hanine.setID(1);
+                        hanine.clientPortal();
+                        //Instructor hanine = new Instructor("Hanine", "Pilates", "Montreal, Laval", "514-000-0000", true);
+                        //hanine.setID(1);
+                        //hanine.instructorPortal();
+
                     default:
                         System.out.println("Invalid choice. Please select a valid option.");
                         break;

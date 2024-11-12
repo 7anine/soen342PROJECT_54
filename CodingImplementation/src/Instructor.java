@@ -181,6 +181,7 @@ public class Instructor extends Record implements User{
             switch (choice) {
                 case 1:
                     viewAllLessons();
+                    selectLessonForBooking(); // Allow instructor to select a lesson for booking
                     break;
                 case 2:
                     System.out.println("Signing out...");
@@ -230,6 +231,44 @@ public class Instructor extends Record implements User{
 
         } catch (SQLException e) {
             System.err.println("Error fetching lessons: " + e.getMessage());
+        }
+    }
+
+    private void selectLessonForBooking() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the Lesson ID to create an offering for, or 0 to go back: ");
+        int lessonId = scanner.nextInt();
+
+        if (lessonId == 0) {
+            return; // Return to the main portal menu
+        }
+
+        createOfferingForLesson(lessonId, this.ID);
+    }
+
+    private void createOfferingForLesson(int lessonId, int instructorID) {
+        String insertQuery = "INSERT INTO Offering (offeringID,lessonId, instructorID) VALUES (?, ?, ?)";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+
+            statement.setInt(1, Offering.getIDincrement());
+            Offering.setIDincrement(Offering.getIDincrement()+1);
+
+            statement.setInt(2, lessonId);
+            statement.setInt(3, instructorID);
+
+
+
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Offering created successfully for instructor ID " + instructorID + " and Lesson ID " + lessonId);
+            } else {
+                System.out.println("Failed to create the offering.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error creating offering: " + e.getMessage());
         }
     }
 }
