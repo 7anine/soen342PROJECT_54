@@ -1,6 +1,6 @@
 -- This SQL File creates all the tables necessary for our projects.
 -- Create database
---CREATE DATABASE soen342;
+-- CREATE DATABASE soen342;
 
 -- Use the created database
 USE soen342;
@@ -84,7 +84,7 @@ CREATE TABLE Offering (
 -- Table for Location
 CREATE TABLE Location (
     locationId INT PRIMARY KEY,
-    locationName VARCHAR(50),
+    locationName VARCHAR(50)
 );
 
 
@@ -111,9 +111,9 @@ INSERT INTO Administrator (adminId) VALUES (12345); --Set admin Id
 
 
 
-USE soen342;
 
-INSERT INTO Location (locationId, scheduleId, locationName)
+
+INSERT INTO Location (locationId, locationName)
 VALUES 
 (1, 'Building A - Room 101'),
 (2, 'Building A - Room 102'),
@@ -125,7 +125,6 @@ VALUES
 (8, 'Auditorium A'),
 (9, 'Auditorium B'),
 (10,'Outdoor Patio');
-
 
 
 INSERT INTO Schedule (scheduleId, date, locationId)
@@ -157,6 +156,6 @@ VALUES
 
 
 USE soen342;
-SELECT * FROM Location;
--- DROP DATABASE soen342;
+SELECT * FROM Lesson;
+--DROP DATABASE soen342;
 
