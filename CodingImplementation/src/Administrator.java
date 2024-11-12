@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import CodingImplementation.src.database.DatabaseConnection;
+
 public class Administrator extends Record {
     private int ID;  // Unique identifier for the administrator
 
@@ -57,34 +59,46 @@ public class Administrator extends Record {
         Scanner scanner = new Scanner(System.in);
         String choice = "";
         
-        while(!choice.equals("3")){
+        while(!choice.equals("6")){
         // Display the menu options
         String menu = 
-            "Admin Panel\n" +
-            "1. Create a Lesson\n" +
-            "2. Cancel a Lesson\n" +
-            "3. Log out\n" +
-            "Please select an option (1/2/3): ";
+        "Admin Panel\n" +
+        "1. Create a Lesson\n" +
+        "2. Cancel a Lesson\n" +
+        "3. View Space Table\n" +
+        "4. View Schedule Table\n" +
+        "5. View Location Table\n" +
+        "6. Log out\n" +
+        "Please select an option (1-6): ";
         
         System.out.print(menu);
         choice = scanner.nextLine();  // Get user choice
         
-            switch (choice) {
-                case "1":
-                    createLesson();
-                    break;
-                case "2":
-                    // Call cancelLesson() method in Lesson class
-                    
-                    break;
-                case "3":
-                    // Log out
-                    break;
-                default:
-                    System.out.println("Invalid choice, please try again.");
-            }
+        switch (choice) {
+            case "1":
+                createLesson();
+                break;
+            case "2":
+                // Call cancelLesson() method in Lesson class
+                //cancelLesson();
+                break;
+            case "3":
+                displaySpaceTable();
+                break;
+            case "4":
+                displayScheduleTable();
+                break;
+            case "5":
+                displayLocationTable();
+                break;
+            case "6":
+                System.out.println("Logging out...");
+                break;
+            default:
+                System.out.println("Invalid choice, please try again.");
+        }
     }
-        
+        scanner.close();
         return "Admin LoggedOut"; 
     }
      // Method to call createLesson() from Lesson class
@@ -101,12 +115,12 @@ public class Administrator extends Record {
         System.out.print("Enter location ID: ");
         int locationId = Integer.parseInt(scanner.nextLine());
         
-        System.out.print("Enter privacy (private/group): ");
+        System.out.print("Enter privacy (Private/Public): ");
         String privacy = scanner.nextLine().toLowerCase();
         
         // Check that privacy is either "private" or "group"
-        while (!privacy.equals("private") && !privacy.equals("group")) {
-            System.out.print("Invalid input. Please enter 'private' or 'group' for privacy: ");
+        while (!privacy.equals("private") && !privacy.equals("public")) {
+            System.out.print("Invalid input. Please enter 'Private' or 'Public' for privacy: ");
             privacy = scanner.nextLine().toLowerCase();
         }
         
@@ -123,5 +137,58 @@ public class Administrator extends Record {
         lesson.createLesson(); 
         
         System.out.println("Lesson created successfully!");
+    }
+    // Method to display the Space table
+    private void displaySpaceTable() {
+        String query = "SELECT * FROM Space";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            System.out.println("Space Table:");
+            while (resultSet.next()) {
+                int spaceId = resultSet.getInt("spaceId");
+                String city = resultSet.getString("city");
+                int scheduleId = resultSet.getInt("scheduleId");
+                System.out.printf("Space ID: %d, City: %s, Schedule ID: %d%n", spaceId, city, scheduleId);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error displaying Space table: " + e.getMessage());
+        }
+    }
+    // Method to display the Schedule table
+    private void displayScheduleTable() {
+        String query = "SELECT * FROM Schedule";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            System.out.println("Schedule Table:");
+            while (resultSet.next()) {
+                int scheduleId = resultSet.getInt("scheduleId");
+                String date = resultSet.getString("date");
+                int locationId = resultSet.getInt("locationId");
+                System.out.printf("Schedule ID: %d, Date: %s, Location ID: %d%n", scheduleId, date, locationId);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error displaying Schedule table: " + e.getMessage());
+        }
+    }
+    // Method to display the Location table
+    private void displayLocationTable() {
+        String query = "SELECT * FROM Location";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            System.out.println("Location Table:");
+            while (resultSet.next()) {
+                int locationId = resultSet.getInt("locationId");
+                String locationName = resultSet.getString("locationName");
+                System.out.printf("Location ID: %d, Location Name: %s%n", locationId, locationName);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error displaying Location table: " + e.getMessage());
+        }
     }
 }
