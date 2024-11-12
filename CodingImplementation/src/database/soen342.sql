@@ -75,10 +75,10 @@ CREATE TABLE Lesson (
 CREATE TABLE Offering (
     offeringId INT PRIMARY KEY,
     lessonId INT,
-    clientId INT,
+    instructorId INT,
     isAvailable BOOLEAN,
     FOREIGN KEY (lessonId) REFERENCES Lesson(lessonId), 
-    FOREIGN KEY (clientId) REFERENCES Client(clientId)
+    FOREIGN KEY (instructorId) REFERENCES Instructor(instructorId)
 );
 
 -- Table for Location
@@ -157,5 +157,5 @@ VALUES
 
 USE soen342;
 SELECT * FROM Lesson;
---DROP DATABASE soen342;
+-- DROP DATABASE soen342;
 

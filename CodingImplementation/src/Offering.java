@@ -9,7 +9,40 @@ import CodingImplementation.src.database.DatabaseConnection;
 
 public class Offering extends Record {
     private int ID;
-    private int IDincrement = 1;
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public static int getIDincrement() {
+        return IDincrement;
+    }
+
+    public static void setIDincrement(int IDincrement) {
+        Offering.IDincrement = IDincrement;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
+    }
+
+    public void setInstructorId(int instructorId) {
+        this.instructorId = instructorId;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    private static int IDincrement = 1;
     private int lessonId;
     private int instructorId;
     private boolean isAvailable;
