@@ -1,3 +1,4 @@
+package CodingImplementation.src;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -55,11 +56,11 @@ public class Administrator extends Record {
     }
 
      // Admin panel method to display the menu
-    public String adminPanel() {
+    public void adminPanel() {
         Scanner scanner = new Scanner(System.in);
-        String choice = "";
+        int choice= -1;
         
-        while(!choice.equals("6")){
+        while(choice!=6){
         // Display the menu options
         String menu = 
         "Admin Panel\n" +
@@ -72,34 +73,35 @@ public class Administrator extends Record {
         "Please select an option (1-6): ";
         
         System.out.print(menu);
-        choice = scanner.nextLine();  // Get user choice
+        choice = scanner.nextInt();  // Get user choice
         
         switch (choice) {
-            case "1":
+            case 1:
                 createLesson();
                 break;
-            case "2":
+            case 2:
                 // Call cancelLesson() method in Lesson class
                 //cancelLesson();
                 break;
-            case "3":
+            case 3:
                 displaySpaceTable();
                 break;
-            case "4":
+            case 4:
                 displayScheduleTable();
                 break;
-            case "5":
+            case 5:
                 displayLocationTable();
                 break;
-            case "6":
+            case 6:
                 System.out.println("Logging out...");
                 break;
             default:
                 System.out.println("Invalid choice, please try again.");
         }
+       
     }
-        scanner.close();
-        return "Admin LoggedOut"; 
+    scanner.close();
+        
     }
      // Method to call createLesson() from Lesson class
      private void createLesson() {
@@ -137,6 +139,7 @@ public class Administrator extends Record {
         lesson.createLesson(); 
         
         System.out.println("Lesson created successfully!");
+        scanner.close();
     }
     // Method to display the Space table
     private void displaySpaceTable() {

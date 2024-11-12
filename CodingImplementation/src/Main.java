@@ -1,3 +1,4 @@
+package CodingImplementation.src;
 
 import java.util.Scanner;
 import java.sql.Connection;
@@ -49,7 +50,7 @@ public class Main {
                                 int instructorID = scanner.nextInt();
                                 System.out.print("Enter Instructor Password: ");
                                 int instructorPassword = scanner.nextInt();
-                                Instructor.instructorSignIn(instructorID, instructorPassword);
+                                //Instructor.instructorSignIn(instructorID, instructorPassword);
                                 //TODO: if successful, fetch instructor fields from db, create new instructor object and go to instructorPortal
                                 break;
                         }

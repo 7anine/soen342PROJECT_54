@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 import CodingImplementation.src.database.DatabaseConnection;
 
 

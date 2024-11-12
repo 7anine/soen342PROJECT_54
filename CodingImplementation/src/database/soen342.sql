@@ -39,7 +39,7 @@ CREATE TABLE Booking (
     FOREIGN KEY (clientId) REFERENCES Client(clientId)
 );
 
-use soen342;
+
 -- Table for Schedule
 CREATE TABLE Schedule (
     scheduleId INT PRIMARY KEY,
