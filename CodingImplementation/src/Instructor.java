@@ -1,11 +1,10 @@
-import CodingImplementation.src.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Instructor extends Record implements User{
@@ -14,26 +13,27 @@ public class Instructor extends Record implements User{
     private String cities;
     private String phoneNumber;
     // private boolean availability; not sure how to use that
-    private Lesson[] assignedLessons;
     private int ID;  // Unique identifier for the administrator
-    private static int IDincrement = 1;
-    
 
-    public Instructor(String name, String specialization, String cities, String phoneNumber,  Lesson[] assignedLessons) {
+
+    public Instructor(String name, String specialization, String cities, String phoneNumber) {
         this.name = name;
         this.specialization = specialization;
         this.cities = cities;
         this.phoneNumber = phoneNumber;
-        this.assignedLessons = assignedLessons;
-        this.ID = IDincrement;
-        IDincrement++;
+        int lastInstructorId = DatabaseConnection.getLastIdFromTable("instructor", "instructorId");
+        System.out.println("Last Client ID: " + lastInstructorId);
+
+        this.ID = lastInstructorId + 1;
     }
 
-    public Instructor(String name, String specialization, String cities, String phoneNumber, boolean availability) {
+    // to be called if creating an instructor obj for an instructor already in database (signing in)
+    public Instructor(String name, String specialization, String cities, String phoneNumber, int ID) {
         this.name = name;
         this.specialization = specialization;
         this.cities = cities;
         this.phoneNumber = phoneNumber;
+        this.ID = ID;
     }
 
     public String getPhoneNumber() {
@@ -86,14 +86,7 @@ public class Instructor extends Record implements User{
 
    
 
-    public Lesson[] getAssignedLessons() {
-        return assignedLessons;
-    }
-
-    public void setAssignedLessons(Lesson[] assignedLessons) {
-        this.assignedLessons = assignedLessons;
-    }
-    public void delete(){}
+   public void delete(){}
 
 
     public void createInstructorAccount(Instructor instructor, String password) {
@@ -138,7 +131,40 @@ public class Instructor extends Record implements User{
         //modify the offering in the database to make it availabel to public
     }
 
-    public static boolean instructorSignIn(int instructorID, int instructorPassword) {
+    public static Instructor instructorSignIn(int instructorID, int instructorPassword) {
+        if (validPassword(instructorID, instructorPassword)) {
+            String selectQuery = "SELECT instructorId, name, specialization, phoneNumber, cities FROM Instructor WHERE instructorId = ?";
+
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(selectQuery)) {
+
+                statement.setInt(1, instructorID);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        // Retrieve instructor data from the ResultSet
+                        int id = resultSet.getInt("instructorId");
+                        String name = resultSet.getString("name");
+                        String specialization = resultSet.getString("specialization");
+                        String phoneNumber = resultSet.getString("phoneNumber");
+                        String cities = resultSet.getString("cities");
+
+                        // Create and return the Instructor object
+                        return new Instructor(name, specialization, phoneNumber, cities, id);
+                    }
+                }
+
+            } catch (SQLException e) {
+                System.err.println("Error retrieving instructor data: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Sign-in failed. Cannot create instructor object.");
+        }
+
+        return null; // Return null if sign-in fails or instructor data is not retrieved
+    }
+
+    public static boolean validPassword(int instructorID, int instructorPassword) {
         String selectQuery = "SELECT password FROM Instructor WHERE instructorId = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();

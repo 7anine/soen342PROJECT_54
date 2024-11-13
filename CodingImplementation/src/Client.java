@@ -1,10 +1,7 @@
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
-import CodingImplementation.src.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 public class Client extends Record {
     private String name;
@@ -13,7 +10,6 @@ public class Client extends Record {
     private String email;
     private Client guardian;
     private int guardianID = 0;
-    private static int IDincrement = 1;
 
     private int ID;
 
@@ -29,8 +25,11 @@ public class Client extends Record {
         }else{
             this.isOver18 = true;
         }
-        this.ID = IDincrement;
-        IDincrement++;
+
+        int lastClientId = DatabaseConnection.getLastIdFromTable("client", "clientId");
+        System.out.println("Last Client ID: " + lastClientId);
+
+        this.ID = lastClientId + 1;
     }
 
     public int getID() {
@@ -41,14 +40,14 @@ public class Client extends Record {
         this.ID = ID;
     }
 
+    // to be called if creating a client obj for a client already in database (signing in)
     public Client(String name, int age, String email, int ID, int guardianID) {
         super();  // Call the parent class constructor if necessary
         this.name = name;
-        this.age = age;
         this.email = email;
+        this.age = age;
         this.ID =ID;
         this.guardianID = guardianID;
-        //TODO: create guardian by fetching attributes by ID from database if needed
     }
 
     public boolean isOver18() {
@@ -150,7 +149,7 @@ public class Client extends Record {
 
 
 
-    public Client requestGuardian(){
+    public Client requestGuardian() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("You are under 18. Please ask a parent to enter his/her information: ");
@@ -158,16 +157,49 @@ public class Client extends Record {
         String name = scanner.nextLine();
         System.out.println("Enter your age:");
         int age = scanner.nextInt();
+        scanner.nextLine(); // Consume newline left by nextInt()
         System.out.println("Enter your email:");
         String email = scanner.nextLine();
-        //not adding the guardian as a user, but as someone who logs into his childs account with the same password,
-        //and is authorized to make bookings in his name (add to db still for persistance)
 
-        return new Client(name, age, email);
+        Client guardian = new Client(name, age, email);
+
+        // Insert guardian information into the database and retrieve the GuardianID
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String insertGuardianSQL = "INSERT INTO Client (name, age, email) VALUES (?, ?, ?)";
+
+            try (PreparedStatement statement = connection.prepareStatement(insertGuardianSQL, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, name);
+                statement.setInt(2, age);
+                statement.setString(3, email);
+                statement.executeUpdate();
+
+                // Retrieve the generated guardian ID
+                ResultSet generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int guardianID = generatedKeys.getInt(1);
+                    guardian.setID(guardianID); // Assuming Client class has a setID() method
+                    System.out.println("Id of the guardian of " + this.name + " is: " + guardianID);
+                    // Update current client with GuardianID
+                    String updateGuardianIDSQL = "UPDATE Client SET GuardianID = ? WHERE id = ?";
+                    try (PreparedStatement updateStatement = connection.prepareStatement(updateGuardianIDSQL)) {
+                        updateStatement.setInt(1, guardianID);
+                        updateStatement.setInt(2, this.ID); // Assuming current client’s ID is set
+                        updateStatement.executeUpdate();
+                    }
+                } else {
+                    System.out.println("Failed to retrieve Guardian ID.");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
+
+        return guardian;
     }
 
 
-    public static boolean clientSignIn(int clientID, int clientPassword) {
+
+    public static boolean validPassword(int clientID, int clientPassword) {
         String selectQuery = "SELECT password FROM Client WHERE clientId = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -197,8 +229,8 @@ public class Client extends Record {
 
         return false;
     }
-    public static Client createClientObject(int clientId, int clientPassword) {
-        if (clientSignIn(clientId, clientPassword)) {
+    public static Client ClientSignIn(int clientId, int clientPassword) {
+        if (validPassword(clientId, clientPassword)) {
             String selectQuery = "SELECT clientId, name, age, email, isOver18, guardianClientId FROM Client WHERE clientId = ?";
 
             try (Connection connection = DatabaseConnection.getConnection();
@@ -214,7 +246,10 @@ public class Client extends Record {
                         int age = resultSet.getInt("age");
                         String email = resultSet.getString("email");
                         boolean isOver18 = resultSet.getBoolean("isOver18");
-                        int guardianId = resultSet.getObject("guardianClientId") != null ? resultSet.getInt("guardianClientId") : null;
+                        int guardianId = resultSet.getInt("guardianClientId");
+                        if (resultSet.wasNull()) {
+                            guardianId = 0; // or any other default value indicating no guardian
+                        }
 
                         // Create and return the Client object
                         return new Client(name, age, email, id, guardianId);

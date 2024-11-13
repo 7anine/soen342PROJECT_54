@@ -1,9 +1,7 @@
-
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.SQLException;
-import CodingImplementation.src.database.DatabaseConnection;
-
+import database.DatabaseConnection;
 
 public class Main {
     public static void main(String[] args) {
@@ -25,7 +23,12 @@ public class Main {
                 System.out.println("5. Quit");
 
                 System.out.print("Enter your choice (1-5): ");
+                while (!scanner.hasNextInt()) {
+                    System.out.print("Invalid input. Enter a number between 1 and 5: ");
+                    scanner.next(); // Clear the invalid input
+                }
                 choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character left by nextInt()
 
                 switch (choice) {
                     case 1:
@@ -34,62 +37,75 @@ public class Main {
                         System.out.println("2. Instructor");
 
                         System.out.print("Enter your choice (1 or 2): ");
-                        int signInAs = scanner.nextInt();
+                        int signInAs;
+                        while (!scanner.hasNextInt()) {
+                            System.out.print("Invalid input. Enter 1 or 2: ");
+                            scanner.next(); // Clear invalid input
+                        }
+                        signInAs = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+
                         switch (signInAs) {
                             case 1:
-                                System.out.print("Enter Client name: ");
+                                System.out.print("Enter Client ID: ");
                                 int clientID = scanner.nextInt();
                                 System.out.print("Enter Client Password: ");
                                 int clientPassword = scanner.nextInt();
-                                Client.clientSignIn(clientID, clientPassword);
-                                //TODO: if successful, fetch client fields from db, create new client object and go to clientPortal
+                                scanner.nextLine(); // Consume newline
+                                Client newClient = Client.ClientSignIn(clientID, clientPassword);
+                                newClient.clientPortal();
                                 break;
                             case 2:
-                                System.out.print("Enter Instructor name: ");
+                                System.out.print("Enter Instructor ID: ");
                                 int instructorID = scanner.nextInt();
                                 System.out.print("Enter Instructor Password: ");
                                 int instructorPassword = scanner.nextInt();
+                                scanner.nextLine(); // Consume newline
                                 Instructor.instructorSignIn(instructorID, instructorPassword);
-                                //TODO: if successful, fetch instructor fields from db, create new instructor object and go to instructorPortal
                                 break;
+                            default:
+                                System.out.println("Invalid choice.");
                         }
                         break;
                     case 2:
                         System.out.println("Registering as a client...");
-                        System.out.println("Enter your name:");
+                        System.out.print("Enter your name: ");
                         String clientName = scanner.nextLine();
-                        System.out.println("Enter your age:");
+                        System.out.print("Enter your age: ");
                         int clientAge = scanner.nextInt();
-                        System.out.println("Enter your email:");
+                        scanner.nextLine(); // Consume newline
+                        System.out.print("Enter your email: ");
                         String clientEmail = scanner.nextLine();
-                        System.out.println("Enter your password:");
-                        String clientPassword = scanner.nextLine();
+                        System.out.print("Enter your password: ");
+                        String clientPasswordStr = scanner.nextLine();
 
                         Client newClient = new Client(clientName, clientAge, clientEmail);
-                        newClient.createClientAccount(newClient, clientPassword);
+                        System.out.println("Your client ID is: " + newClient.getID());
+                        newClient.createClientAccount(newClient, clientPasswordStr);
                         newClient.clientPortal();
                         break;
                     case 3:
                         System.out.println("Registering as an instructor...");
-                        System.out.println("Enter your name:");
+                        System.out.print("Enter your name: ");
                         String instructorName = scanner.nextLine();
-                        System.out.println("Enter your specialization:");
+                        System.out.print("Enter your specialization: ");
                         String instructorSpecialization = scanner.nextLine();
-                        System.out.println("Enter your phone number:");
+                        System.out.print("Enter your phone number: ");
                         String instructorPhone = scanner.nextLine();
-                        System.out.println("Enter the cities that you are available in (separated by commas):");
+                        System.out.print("Enter the cities that you are available in (separated by commas): ");
                         String instructorCities = scanner.nextLine();
-                        System.out.println("Enter your password:");
-                        String instructorPassword = scanner.nextLine();
+                        System.out.print("Enter your password: ");
+                        String instructorPasswordStr = scanner.nextLine();
 
-                        Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorPhone, instructorCities, null);
-                        newInstructor.createInstructorAccount(newInstructor,instructorPassword);
+                        Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorPhone, instructorCities);
+                        newInstructor.createInstructorAccount(newInstructor, instructorPasswordStr);
                         newInstructor.instructorPortal();
                         break;
                     case 4:
-                    System.out.println("Signing in as an admin...");
+                        System.out.println("Signing in as an admin...");
                         System.out.print("Enter Admin ID: ");
                         int enteredId = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
 
                         Administrator admin = new Administrator(enteredId);
                         if (admin.verifyAdminId(connection, enteredId)) {
@@ -101,15 +117,6 @@ public class Main {
                     case 5:
                         System.out.println("Thank you for using The Lesson Link. Goodbye!");
                         break;
-                    case 6:
-                        System.out.println("Testing the following method: _______ instructor portal _______");
-                        Client hanine = new Client("Hanine", 20, "h@gmail.com");
-                        hanine.setID(1);
-                        hanine.clientPortal();
-                        //Instructor hanine = new Instructor("Hanine", "Pilates", "Montreal, Laval", "514-000-0000", true);
-                        //hanine.setID(1);
-                        //hanine.instructorPortal();
-
                     default:
                         System.out.println("Invalid choice. Please select a valid option.");
                         break;
@@ -119,6 +126,7 @@ public class Main {
             System.err.println("Connection failed: " + e.getMessage());
         } finally {
             scanner.close();
+            System.gc(); // Suggest garbage collection, though it's managed by JVM
         }
     }
 }
