@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import CodingImplementation.src.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 public class Administrator extends Record {
     private int ID;  // Unique identifier for the administrator
