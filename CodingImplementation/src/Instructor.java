@@ -312,33 +312,80 @@ public class Instructor extends Record implements User{
     }
 
     private void createOfferingForLesson(int lessonId, int instructorID) {
-        String insertQuery = "INSERT INTO Offering (offeringID,lessonId, instructorID) VALUES (?, ?, ?)";
+        String insertQuery = "INSERT INTO Offering (offeringID, lessonId, instructorID) VALUES (?, ?, ?)";
+        String getLessonCityQuery = "SELECT Location.locationCity FROM Lesson " +
+                "JOIN Location ON Lesson.locationID = Location.locationID " +
+                "WHERE Lesson.lessonId = ?";
+        String getInstructorCitiesQuery = "SELECT cities FROM Instructor WHERE instructorID = ?";
 
         lock.writeLock().lock();
-        try{
+        try {
             System.out.println(Thread.currentThread().getName() + " is writing to the database from method createOfferingForLesson");
 
+            // Step 1: Retrieve the lesson's location city
+            String lessonCity = null;
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement lessonCityStmt = connection.prepareStatement(getLessonCityQuery)) {
 
-                try (Connection connection = DatabaseConnection.getConnection();
-                 PreparedStatement statement = connection.prepareStatement(insertQuery)) {
-
-                statement.setInt(1, Offering.getIDincrement());
-                Offering.setIDincrement(Offering.getIDincrement()+1);
-
-                statement.setInt(2, lessonId);
-                statement.setInt(3, instructorID);
-
-
-
-                int rowsAffected = statement.executeUpdate();
-                if (rowsAffected > 0) {
-                    System.out.println("Offering created successfully for instructor ID " + instructorID + " and Lesson ID " + lessonId);
-                } else {
-                    System.out.println("Failed to create the offering.");
+                lessonCityStmt.setInt(1, lessonId);
+                try (ResultSet lessonCityResult = lessonCityStmt.executeQuery()) {
+                    if (lessonCityResult.next()) {
+                        lessonCity = lessonCityResult.getString("locationCity");
+                    } else {
+                        System.out.println("Lesson or Location not found for lesson ID: " + lessonId);
+                        return;
+                    }
                 }
 
             } catch (SQLException e) {
-                System.err.println("Error creating offering: " + e.getMessage());
+                System.err.println("Error retrieving lesson city: " + e.getMessage());
+                return;
+            }
+
+            // Step 2: Retrieve the instructor's cities
+            String instructorCities = null;
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement instructorCitiesStmt = connection.prepareStatement(getInstructorCitiesQuery)) {
+
+                instructorCitiesStmt.setInt(1, instructorID);
+                try (ResultSet instructorCitiesResult = instructorCitiesStmt.executeQuery()) {
+                    if (instructorCitiesResult.next()) {
+                        instructorCities = instructorCitiesResult.getString("cities");
+                    } else {
+                        System.out.println("Instructor not found for instructor ID: " + instructorID);
+                        return;
+                    }
+                }
+
+            } catch (SQLException e) {
+                System.err.println("Error retrieving instructor cities: " + e.getMessage());
+                return;
+            }
+
+            // Step 3: Verify if the instructor's cities contain the lesson's location city
+            if (instructorCities != null && lessonCity != null && instructorCities.contains(lessonCity)) {
+                // Step 4: Create the offering if the instructor is allowed to teach in the lesson's location city
+                try (Connection connection = DatabaseConnection.getConnection();
+                     PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+
+                    statement.setInt(1, Offering.getIDincrement());
+                    Offering.setIDincrement(Offering.getIDincrement() + 1);
+
+                    statement.setInt(2, lessonId);
+                    statement.setInt(3, instructorID);
+
+                    int rowsAffected = statement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        System.out.println("Offering created successfully for instructor ID " + instructorID + " and Lesson ID " + lessonId);
+                    } else {
+                        System.out.println("Failed to create the offering.");
+                    }
+
+                } catch (SQLException e) {
+                    System.err.println("Error creating offering: " + e.getMessage());
+                }
+            } else {
+                System.out.println("Instructor with ID " + instructorID + " is not authorized to create an offering for lesson in city " + lessonCity);
             }
         } finally {
             lock.writeLock().unlock(); // Release the instance-level write lock
