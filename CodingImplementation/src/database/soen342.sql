@@ -44,11 +44,10 @@ CREATE TABLE Booking (
 -- Table for Schedule
 CREATE TABLE Schedule (
     scheduleId INT PRIMARY KEY,
-    date DATE, 
-    full BOOLEAN,
-    startTime TIME,
-    duration int,
-    locationId INT
+    date DATE,
+    locationId INT,
+    startTime DECIMAL(4, 2), -- as a decimal value (e.g., 2.5 for 2:30 and 2.75 for 2:45)
+    endTime DECIMAL(4, 2)
 );
 
 -- Table for Space
@@ -87,8 +86,8 @@ CREATE TABLE Offering (
 -- Table for Location
 CREATE TABLE Location (
     locationId INT PRIMARY KEY,
-    city VARCHAR(50),
-    locationName VARCHAR(50)
+    locationName VARCHAR(50),
+    locationCity VARCHAR(50)
 );
 
 
@@ -110,51 +109,67 @@ ON DELETE CASCADE;
 ALTER TABLE Client
 ADD COLUMN password VARCHAR(255) NOT NULL;
 
-INSERT INTO Administrator (adminId) VALUES (12345); -- Set admin Id
 
-INSERT INTO Location (locationId, city, locationName)
-VALUES 
-(1, 'New York', 'Building A - Room 101'),
-(2, 'New York', 'Building A - Room 102'),
-(3, 'Chicago', 'Building B - Room 201'),
-(4, 'Miami','Building B - Room 202'),
-(5, 'Miami', 'Building C - Room 301'),
-(6, 'San Francisco', 'Building C - Room 302'),
-(7, 'San Francisco', 'Library - Meeting Room'),
-(8, 'Montreal', 'Auditorium A'),
-(9, 'Montreal', 'Auditorium B'),
-(10,'Montreal', 'Outdoor Patio');
+INSERT INTO Administrator (adminId) VALUES (12345); --Set admin Id
 
-INSERT INTO Schedule (scheduleId, date, full, startTime, duration, locationId)
+
+
+
+
+INSERT INTO Location (locationId, locationName, locationCity)
 VALUES 
-(1, '2024-11-01', '08:00:00', 60, 1),
-(2, '2024-11-02', '09:00:00', 90, 2),
-(3, '2024-11-03', '10:00:00', 120, 3),
-(4, '2024-11-04', '11:00:00', 60, 4),
-(5, '2024-11-05', '12:00:00', 90, 5),
-(6, '2024-11-06', '13:00:00', 120, 6),
-(7, '2024-11-07', '14:00:00', 60, 7),
-(8, '2024-11-08', '15:00:00', 90, 8),
-(9, '2024-11-09', '16:00:00', 120, 9),
-(10, '2024-11-10', '17:00:00', 60, 10);
+(1, 'Building A - Room 101'),
+(2, 'Building A - Room 102'),
+(3, 'Building B - Room 201'),
+(4, 'Building B - Room 202'),
+(5,  'Building C - Room 301'),
+(6, 'Building C - Room 302'),
+(7, 'Library - Meeting Room'),
+(8, 'Auditorium A'),
+(9, 'Auditorium B'),
+(10,'Outdoor Patio');
+
+
+INSERT INTO Schedule (scheduleId, date, locationId, startTime, endTime)
+VALUES 
+(1, '2024-11-01', 1),
+(2, '2024-11-02', 2),
+(3, '2024-11-03', 3),
+(4, '2024-11-04', 4),
+(5, '2024-11-05', 5),
+(6, '2024-11-06', 6),
+(7, '2024-11-07', 7),
+(8, '2024-11-08', 8),
+(9, '2024-11-09', 9),
+(10, '2024-11-10', 10);
 
 
 INSERT INTO Space (spaceId, scheduleId)
 VALUES 
-(1,  1),
-(2,  2),
-(3,  3),
-(4, 4),
-(5,  5),
-(6,  6),
-(7, 7),
-(8,  8),
-(9,  9),
-(10, 10);
+(1, 'Concordia', 1),
+(2, 'Udem', 2),
+(3, 'Uqam', 3),
+(4, 'Mcgill', 4),
+(5, 'Harvard', 5),
+(6, 'MIT', 6),
+(7, 'UofT', 7),
+(8, 'ULaval', 8),
+(9, 'Yale', 9),
+(10, 'Dartmouth', 10);
+
+INSERT INTO Instructor(instructorId, name,phoneNumber, specialization,cities, soen342.Instructor.password)
+VALUES
+(1, 'Sara', '514-99', 'Judo', 'Montreal, Laval, Toronto', '123'),
+(2, 'Fatema', '514-23', 'Pilates', 'Laval, Toronto', '123'),
+(3, 'Bob', '514-06', 'Boxe', 'Laval, Toronto, Ottawa', '123'),
+(4, 'Mark', '514-34', 'Basketball', 'Quebec', '123');
+
+INSERT INTO Lesson(lessonId, type, scheduleId, spaceId, locationId, privacy, instructorId, isAvailable, capacity, numberRegistered)
+    VALUES
+        (1, 'Judo', 1, 1, 1, 'Private', 1, 1, 4,0 );
 
 
-USE soen342;
-
-SELECT * FROM Schedule;
+    USE soen342;
+SELECT * FROM Lesson;
 -- DROP DATABASE soen342;
 

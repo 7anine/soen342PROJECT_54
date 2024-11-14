@@ -6,10 +6,12 @@ public class Location {
     private static int IDincrement = 1;
     private int scheduleId;
     private String locationName;
+    private String city;
 
-    public Location(String locationName, int scheduleId) {
+    public Location(String locationName, String city, int scheduleId) {
         this.locationName = locationName;
         this.scheduleId = scheduleId;
+        this.city = city;
         this.ID = IDincrement;
         IDincrement++;
     }
@@ -35,5 +37,12 @@ public class Location {
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
+    }
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

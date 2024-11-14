@@ -55,7 +55,9 @@ public class Main {
                                 int clientPassword = scanner.nextInt();
                                 scanner.nextLine(); // Consume newline
                                 Client newClient = Client.ClientSignIn(clientID, clientPassword);
-                                newClient.clientPortal();
+                                if (newClient != null) {
+                                    newClient.clientPortal();
+                                }
                                 break;
                             case 2:
                                 System.out.print("Enter Instructor ID: ");
@@ -64,7 +66,13 @@ public class Main {
                                 int instructorPassword = scanner.nextInt();
                                 scanner.nextLine(); // Consume newline
                                 Instructor newInstructor = Instructor.instructorSignIn(instructorID, instructorPassword);
+<<<<<<< HEAD
                                 newInstructor.instructorPortal();
+=======
+                                if (newInstructor != null) {
+                                    newInstructor.instructorPortal();
+                                }
+>>>>>>> main
                                 break;
                             default:
                                 System.out.println("Invalid choice.");
@@ -100,7 +108,7 @@ public class Main {
                         System.out.print("Enter your password: ");
                         String instructorPasswordStr = scanner.nextLine();
 
-                        Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorPhone, instructorCities);
+                        Instructor newInstructor = new Instructor(instructorName, instructorSpecialization, instructorCities, instructorPhone);
                         newInstructor.createInstructorAccount(newInstructor, instructorPasswordStr);
                         newInstructor.instructorPortal();
                         break;
