@@ -1,4 +1,4 @@
-
+package CodingImplementation.src;
 
 public class Booking extends Record {
     private int offeringId;

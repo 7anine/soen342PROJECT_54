@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Administrator extends Record {
     private int ID;  // Unique identifier for the administrator
@@ -58,9 +58,9 @@ public class Administrator extends Record {
      // Admin panel method to display the menu
     public void adminPanel() {
         Scanner scanner = new Scanner(System.in);
-        int choice= -1;
+        int choice;
         
-        while(choice!=6){
+        do{
         // Display the menu options
         String menu = 
         "Admin Panel\n" +
@@ -74,6 +74,7 @@ public class Administrator extends Record {
         
         System.out.print(menu);
         choice = scanner.nextInt();  // Get user choice
+       
         
         switch (choice) {
             case 1:
@@ -99,8 +100,7 @@ public class Administrator extends Record {
                 System.out.println("Invalid choice, please try again.");
         }
        
-    }
-    scanner.close();
+    }while(choice!=6);
         
     }
      // Method to call createLesson() from Lesson class
@@ -132,12 +132,14 @@ public class Administrator extends Record {
         System.out.println("Enter the capacity.");
         int capacity = Integer.parseInt(scanner.nextLine());
         
+        int ID= DatabaseConnection.getLastIdFromTable("lesson","lessonId") + 1;
         // Create a new Lesson object with the entered details
-        Lesson lesson = new Lesson(type, scheduleId, locationId, privacy, spaceId, capacity);
+        Lesson lesson = new Lesson(ID, type, scheduleId, locationId, privacy, spaceId, capacity);
         
         // Add lesson to dB
         lesson.createLesson(); 
-        
+        scanner.nextLine(); // Consume newline
+
         System.out.println("Lesson created successfully!");
         scanner.close();
     }

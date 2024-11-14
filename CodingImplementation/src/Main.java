@@ -3,7 +3,7 @@ package CodingImplementation.src;
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.SQLException;
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Main {
     public static void main(String[] args) {
@@ -63,7 +63,8 @@ public class Main {
                                 System.out.print("Enter Instructor Password: ");
                                 int instructorPassword = scanner.nextInt();
                                 scanner.nextLine(); // Consume newline
-                                Instructor.instructorSignIn(instructorID, instructorPassword);
+                                Instructor newInstructor = Instructor.instructorSignIn(instructorID, instructorPassword);
+                                newInstructor.instructorPortal();
                                 break;
                             default:
                                 System.out.println("Invalid choice.");
@@ -112,6 +113,8 @@ public class Main {
                         Administrator admin = new Administrator(enteredId);
                         if (admin.verifyAdminId(connection, enteredId)) {
                             admin.adminPanel();
+                            scanner.nextLine(); // Consume newline
+
                         } else {
                             System.out.println("Incorrect Admin ID. Access Denied.");
                         }

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Lesson {
     private String type;
@@ -16,10 +16,9 @@ public class Lesson {
     private int capacity;
     private int numberRegistered;
     private int ID;
-    private static int IDincrement = 1;
 
 
-    public Lesson(String type, int scheduleId,int locationId, String privacy, int spaceId, int capacity) {
+    public Lesson(int ID, String type, int scheduleId,int locationId, String privacy, int spaceId, int capacity) {
         this.type = type;
         this.scheduleId = scheduleId;
         this.spaceId = spaceId;
@@ -28,8 +27,7 @@ public class Lesson {
         this.assignedInstructor = false;
         this.capacity = capacity;
         this.numberRegistered = 0;
-        this.ID = IDincrement;
-        IDincrement++;
+        this.ID = ID;
     }
 
     public String getType() {
@@ -98,6 +96,7 @@ public class Lesson {
         addLessonToDB(this);  
         System.out.println("Lesson Created: " + type + " (Schedule ID: " + scheduleId + ", Location ID: " + locationId + 
                         ", Privacy: " + privacy + ", Space ID: " + spaceId + ")");
+                        
     }
 
     public void addLessonToDB(Lesson lesson){

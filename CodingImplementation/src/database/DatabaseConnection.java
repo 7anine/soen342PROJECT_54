@@ -1,4 +1,4 @@
-package database;
+package CodingImplementation.src.database;
 
 import java.sql.*;
 
