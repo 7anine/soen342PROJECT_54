@@ -377,6 +377,22 @@ public class Instructor extends Record implements User{
                     int rowsAffected = statement.executeUpdate();
                     if (rowsAffected > 0) {
                         System.out.println("Offering created successfully for instructor ID " + instructorID + " and Lesson ID " + lessonId);
+
+
+                        // TODO: Make lesson unavailable since instructor took it
+                        String updateLessonAvailabilityQuery = "UPDATE Lesson SET isAvailable = false WHERE lessonId = ?";
+                        try (PreparedStatement updateStmt = connection.prepareStatement(updateLessonAvailabilityQuery)) {
+                            updateStmt.setInt(1, lessonId);
+                            int updateRowsAffected = updateStmt.executeUpdate();
+                            if (updateRowsAffected > 0) {
+                                System.out.println("Lesson ID " + lessonId + " marked as unavailable.");
+                            } else {
+                                System.out.println("Failed to update lesson availability for lesson ID " + lessonId);
+                            }
+                        } catch (SQLException e) {
+                            System.err.println("Error marking lesson as unavailable: " + e.getMessage());
+                        }
+
                     } else {
                         System.out.println("Failed to create the offering.");
                     }
