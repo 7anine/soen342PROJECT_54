@@ -1,6 +1,6 @@
 -- This SQL File creates all the tables necessary for our projects.
 -- Create database
--- CREATE DATABASE soen342;
+ CREATE DATABASE soen342;
 
 -- Use the created database
 USE soen342;
@@ -84,7 +84,8 @@ CREATE TABLE Offering (
 -- Table for Location
 CREATE TABLE Location (
     locationId INT PRIMARY KEY,
-    locationName VARCHAR(50)
+    locationName VARCHAR(50),
+    locationCity VARCHAR(50)
 );
 
 
@@ -106,6 +107,8 @@ ON DELETE CASCADE;
 ALTER TABLE Client
 ADD COLUMN password VARCHAR(255) NOT NULL;
 
+ALTER TABLE Instructor
+    ADD COLUMN password VARCHAR(255) NOT NULL;
 
 INSERT INTO Administrator (adminId) VALUES (12345); --Set admin Id
 
@@ -113,18 +116,18 @@ INSERT INTO Administrator (adminId) VALUES (12345); --Set admin Id
 
 
 
-INSERT INTO Location (locationId, locationName)
+INSERT INTO Location (locationId, locationName, locationCity)
 VALUES 
-(1, 'Building A - Room 101'),
-(2, 'Building A - Room 102'),
-(3, 'Building B - Room 201'),
-(4, 'Building B - Room 202'),
-(5,  'Building C - Room 301'),
-(6, 'Building C - Room 302'),
-(7, 'Library - Meeting Room'),
-(8, 'Auditorium A'),
-(9, 'Auditorium B'),
-(10,'Outdoor Patio');
+(1, 'Building A - Room 101', 'Montreal'),
+(2, 'Building A - Room 102', 'Laval'),
+(3, 'Building B - Room 201', 'Montreal'),
+(4, 'Building B - Room 202', 'Montreal'),
+(5,  'Building C - Room 301', 'Quebec'),
+(6, 'Building C - Room 302','Ottawa'),
+(7, 'Library - Meeting Room', 'Montreal'),
+(8, 'Auditorium A', 'Toronto'),
+(9, 'Auditorium B', 'Toronto'),
+(10,'Outdoor Patio', 'Montreal');
 
 
 INSERT INTO Schedule (scheduleId, date, locationId)
@@ -143,19 +146,30 @@ VALUES
 
 INSERT INTO Space (spaceId, city, scheduleId)
 VALUES 
-(1, 'New York', 1),
-(2, 'Los Angeles', 2),
-(3, 'Chicago', 3),
-(4, 'Miami', 4),
-(5, 'San Francisco', 5),
-(6, 'Dallas', 6),
-(7, 'Houston', 7),
-(8, 'Seattle', 8),
-(9, 'Boston', 9),
-(10, 'Washington, D.C.', 10);
+(1, 'Concordia', 1),
+(2, 'Udem', 2),
+(3, 'Uqam', 3),
+(4, 'Mcgill', 4),
+(5, 'Harvard', 5),
+(6, 'MIT', 6),
+(7, 'UofT', 7),
+(8, 'ULaval', 8),
+(9, 'Yale', 9),
+(10, 'Dartmouth', 10);
+
+INSERT INTO Instructor(instructorId, name,phoneNumber, specialization,cities, soen342.Instructor.password)
+VALUES
+(1, 'Sara', '514-99', 'Judo', 'Montreal, Laval, Toronto', '123'),
+(2, 'Fatema', '514-23', 'Pilates', 'Laval, Toronto', '123'),
+(3, 'Bob', '514-06', 'Boxe', 'Laval, Toronto, Ottawa', '123'),
+(4, 'Mark', '514-34', 'Basketball', 'Quebec', '123');
+
+INSERT INTO Lesson(lessonId, type, scheduleId, spaceId, locationId, privacy, instructorId, isAvailable, capacity, numberRegistered)
+    VALUES
+        (1, 'Judo', 1, 1, 1, 'Private', 1, 1, 4,0 );
 
 
-USE soen342;
+    USE soen342;
 SELECT * FROM Lesson;
 -- DROP DATABASE soen342;
 
