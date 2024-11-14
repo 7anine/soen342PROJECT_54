@@ -4,11 +4,15 @@ public class Schedule {
     private int ID;
     private static int IDincrement = 1;
     private String day;
-    private String time;
+    private String startTime;
+    private String endTime;
 
-    public Schedule(String day, String time) {
+
+
+    public Schedule(String day, String startTime, String endTime) {
         this.day = day;
-        this.time = time;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.ID = IDincrement;
         IDincrement++;
     }
@@ -28,11 +32,19 @@ public class Schedule {
         this.day = day;
     }
 
-    public String getTime() {
-        return time;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

@@ -382,7 +382,11 @@ public class Client extends Record {
 
         Booking booking = new Booking(offeringId, this.ID);
 
-        addBookingToDatabase(booking);
+        if(!isOfferingOverlapping(offeringId)){
+            addBookingToDatabase(booking);
+        }else{
+            System.out.println("You cannot book an offering that overlaps in date and time with one you have already booked.");
+        }
     }
 
     private void addBookingToDatabase(Booking booking) {
@@ -415,4 +419,98 @@ public class Client extends Record {
             System.out.println(Thread.currentThread().getName() + " finished writing to the database from method adBookingtoDatabase");
         }
     }
+
+    public boolean isOfferingOverlapping(int selectedOfferingId) {
+
+        // Fetch the lessonId for the selected offering.
+        String getOfferingQuery = "SELECT lessonId FROM Offering WHERE ID = ?";
+        int lessonId = -1;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(getOfferingQuery)) {
+
+            preparedStatement.setInt(1, selectedOfferingId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                lessonId = resultSet.getInt("lessonId");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching offering details: " + e.getMessage());
+            return false;
+        }
+
+        // Fetch the scheduleId for the lesson from the Lesson table
+        String getLessonQuery = "SELECT scheduleId FROM Lesson WHERE lessonId = ?";
+        int scheduleId = -1;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(getLessonQuery)) {
+
+            preparedStatement.setInt(1, lessonId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                scheduleId = resultSet.getInt("scheduleId");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching lesson details: " + e.getMessage());
+            return false;
+        }
+
+        // Fetch the start time, end time, and date of the schedule
+        String getScheduleQuery = "SELECT startTime, endTime, date FROM Schedule WHERE scheduleId = ?";
+        String newStartTime = null;
+        String newEndTime = null;
+        String newDate = null;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(getScheduleQuery)) {
+
+            preparedStatement.setInt(1, scheduleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                newStartTime = resultSet.getString("startTime");
+                newEndTime = resultSet.getString("endTime");
+                newDate = resultSet.getString("date");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching schedule details: " + e.getMessage());
+            return false;
+        }
+
+        // Check for overlapping schedule
+        // Now we need to check for overlap with any other offerings
+        String checkOverlapQuery = "SELECT S.startTime, S.endTime, S.date FROM Schedule S " +
+                "JOIN Lesson L ON S.scheduleId = L.scheduleId " +
+                "JOIN Offering O ON L.lessonId = O.lessonId " +
+                "WHERE O.ID != ?";  // Excluding the current offering
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(checkOverlapQuery)) {
+
+            preparedStatement.setInt(1, selectedOfferingId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String existingStartTime = resultSet.getString("startTime");
+                String existingEndTime = resultSet.getString("endTime");
+                String existingDate = resultSet.getString("date");
+
+                // Compare schedules for overlap based on date, startTime, and endTime
+                if (newDate.equals(existingDate) &&
+                        (newStartTime.compareTo(existingEndTime) < 0 && newEndTime.compareTo(existingStartTime) > 0)) {
+                    // using AND since one similarity is fine, as long they are not ALL equal
+                    // If there's an overlap in time
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking for overlapping schedules: " + e.getMessage());
+        }
+
+        return false;  // No overlap found
+    }
+
 }
