@@ -1,6 +1,6 @@
 -- This SQL File creates all the tables necessary for our projects.
 -- Create database
- CREATE DATABASE soen342;
+-- CREATE DATABASE soen342;
 
 -- Use the created database
 USE soen342;
@@ -43,8 +43,10 @@ use soen342;
 -- Table for Schedule
 CREATE TABLE Schedule (
     scheduleId INT PRIMARY KEY,
-    date DATE, 
-    locationId INT
+    date DATE,
+    locationId INT,
+    startTime DECIMAL(4, 2), -- as a decimal value (e.g., 2.5 for 2:30 and 2.75 for 2:45)
+    endTime DECIMAL(4, 2)
 );
 
 -- Table for Space
@@ -130,18 +132,18 @@ VALUES
 (10,'Outdoor Patio', 'Montreal');
 
 
-INSERT INTO Schedule (scheduleId, date, locationId)
+INSERT INTO Schedule (scheduleId, date, locationId, startTime, endTime)
 VALUES 
-(1, '2024-11-01', 1),
-(2, '2024-11-02', 2),
-(3, '2024-11-03', 3),
-(4, '2024-11-04', 4),
-(5, '2024-11-05', 5),
-(6, '2024-11-06', 6),
-(7, '2024-11-07', 7),
-(8, '2024-11-08', 8),
-(9, '2024-11-09', 9),
-(10, '2024-11-10', 10);
+(1, '2024-11-01', 1, 4, 5),
+(2, '2024-11-02', 2, 2.25, 3),
+(3, '2024-11-03', 3, 2, 3),
+(4, '2024-11-04', 4, 1, 5),
+(5, '2024-11-05', 5, 8, 8.5),
+(6, '2024-11-06', 6, 9, 10),
+(7, '2024-11-07', 7, 1, 1.5),
+(8, '2024-11-08', 8, 8, 9),
+(9, '2024-11-09', 9, 9, 10),
+(10, '2024-11-10', 10, 5, 6.75);
 
 
 INSERT INTO Space (spaceId, city, scheduleId)
