@@ -1,0 +1,29 @@
+OCL Expressions
+
+1. context Offering
+    inv NoOverlappingOfferings:
+    Offering.allInstances()->forAll(o1, o2 |
+        o1 <> o2 implies (
+            o1.lesson.schedule.date <> o2.lesson.schedule.date or
+            o1.lesson.schedule.endTime <= o2.lesson.schedule.startTime or
+            o2.lesson.schedule.endTime <= o1.lesson.schedule.startTime or
+            o1.lesson.locationId <> o2.lesson.locationId
+        )
+    )
+
+2.context Client
+    inv UnderageClientsHaveGuardians:
+    self.age < 18 implies self.guardian <> null and self.guardian.age >= 18
+
+3. context Offering
+    inv InstructorAvailableInCity:
+    self.lesson.location.locationCity->includes(self.instructor.cities)
+
+4. context Client
+    inv NoOverlappingBookings:
+    self.bookings->forAll(b1, b2 |
+        b1 <> b2 implies (
+            b1.offering.lesson.schedule.endTime <= b2.offering.lesson.schedule.startTime or
+            b2.offering.lesson.schedule.endTime <= b1.offering.lesson.schedule.startTime
+        )
+    )

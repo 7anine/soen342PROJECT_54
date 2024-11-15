@@ -1,3 +1,4 @@
+package CodingImplementation.src;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,6 +87,8 @@ public class Administrator extends Record {
                 break;
             case 2:
                 // Call cancelLesson() method in Lesson class
+                //viewLessons();
+                //ModifyLesson(LessonID)
                 //cancelLesson();
                 break;
             case 3:

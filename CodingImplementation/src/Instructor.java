@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 import CodingImplementation.src.database.DatabaseConnection;
 
 
@@ -135,7 +137,7 @@ public class Instructor extends Record implements User{
             }
         } finally {
             lock.writeLock().unlock();  // Release the read lock
-            System.out.println(Thread.currentThread().getName() + " finished writing to the database from method createInstructorAccount");
+            //System.out.println(Thread.currentThread().getName() + " finished writing to the database from method createInstructorAccount");
         }
     }
 
@@ -174,7 +176,7 @@ public class Instructor extends Record implements User{
                 }
             } finally {
                 staticLock.readLock().unlock(); // Release the instance-level write lock
-                System.out.println(Thread.currentThread().getName() + " finished reading to the database from method instructorSignIn");
+                //System.out.println(Thread.currentThread().getName() + " finished reading to the database from method instructorSignIn");
             }
         } else {
             System.out.println("Sign-in failed. Cannot create instructor object.");
@@ -218,7 +220,7 @@ public class Instructor extends Record implements User{
             }
         } finally {
             staticLock.readLock().unlock();  // Release the read lock
-            System.out.println(Thread.currentThread().getName() + " finished reading from database from method validPassword.");
+            //System.out.println(Thread.currentThread().getName() + " finished reading from database from method validPassword.");
         }
 
         return false;
@@ -295,7 +297,7 @@ public class Instructor extends Record implements User{
             }
         } finally {
             lock.readLock().unlock(); // Release the instance-level write lock
-            System.out.println(Thread.currentThread().getName() + " finished reading to the database from method viewAllLessons");
+            //System.out.println(Thread.currentThread().getName() + " finished reading to the database from method viewAllLessons");
         }
     }
 
@@ -408,7 +410,7 @@ public class Instructor extends Record implements User{
             }
         } finally {
             lock.writeLock().unlock(); // Release the instance-level write lock
-            System.out.println(Thread.currentThread().getName() + " finished writing to the database from method createOfferingForLesson");
+            //System.out.println(Thread.currentThread().getName() + " finished writing to the database from method createOfferingForLesson");
         }
     }
 }

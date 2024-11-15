@@ -91,7 +91,8 @@ public class Booking extends Record {
             }
         } finally {
             staticLock.readLock().unlock();
-            System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewBookingByAdmin.");
+            
+        //System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewBookingByAdmin.");
         }
     }
     //Cancel a booking via id
@@ -109,7 +110,7 @@ public class Booking extends Record {
         return false;
     } finally {
         staticLock.writeLock().unlock(); // Release the lock
-        System.out.println(Thread.currentThread().getName() + " finished write operation in cancelBooking.");
+        //System.out.println(Thread.currentThread().getName() + " finished write operation in cancelBooking.");
     }
 }
 

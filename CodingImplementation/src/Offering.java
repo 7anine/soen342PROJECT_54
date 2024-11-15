@@ -154,7 +154,7 @@ public class Offering extends Record {
         }}
         finally {
             staticLock.readLock().unlock();  // Release the read lock
-            System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewOfferings.");
+            //System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewOfferings.");
         }
     }
     
