@@ -1,3 +1,5 @@
+package CodingImplementation.src;
+
 
 import java.sql.*;
 import java.util.Scanner;
@@ -429,9 +431,9 @@ public class Client extends Record {
             System.out.println(Thread.currentThread().getName() + " is writing to the database from method isOfferingOverlapping");
 
 
-                // Fetch the lessonId for the selected offering
-            String getOfferingQuery = "SELECT lessonId FROM Offering WHERE offeringId = ?";
-            int lessonId = -1;
+        // Fetch the lessonId for the selected offering.
+        String getOfferingQuery = "SELECT lessonId FROM offering WHERE ID = ?";
+        int lessonId = -1;
 
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(getOfferingQuery)) {

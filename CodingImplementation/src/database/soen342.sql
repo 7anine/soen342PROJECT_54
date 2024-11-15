@@ -170,14 +170,26 @@ INSERT INTO Lesson(lessonId, type, scheduleId, spaceId, locationId, privacy, ins
     VALUES
         (1, 'Judo', 1, 1, 1, 'Private', 1, 1, 4,0 );
 
-
-
-
 INSERT INTO Offering (offeringId, lessonId, instructorId, isAvailable)
 VALUES
     (1, 1, 1, TRUE);
 
 USE soen342;
-SELECT * FROM Schedule;
+
+INSERT INTO Lesson(lessonId, type, scheduleId, spaceId, locationId, privacy, instructorId, isAvailable, capacity, numberRegistered)
+    VALUES
+        (2, 'Swimming', 3, 2, 2, 'Private', 1, 1, 4,0 );
+
+INSERT INTO Offering (offeringId, lessonId, instructorId, isAvailable)
+VALUES
+    (2, 2, 1, TRUE);
+
+INSERT INTO Booking(bookingId, clientId,offeringId) VALUES
+    (1,1,1),
+    (2,2,2);
+
+
+USE soen342;
+SELECT * FROM Booking;
 -- DROP DATABASE soen342;
 

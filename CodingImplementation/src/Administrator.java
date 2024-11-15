@@ -68,14 +68,14 @@ public class Administrator extends Record {
         String menu = 
         "Admin Panel\n" +
         "1. Create a Lesson\n" +
-        "2. Cancel a Lesson\n" +
+        "2. Manage Lessons\n" +
         "3. View Space Table\n" +
         "4. View Schedule Table\n" +
         "5. View Location Table\n"+
-        "6. Delete Accounts\n" +
+        "6. Manage Accounts\n" +
         "7. Manage Bookings\n"+
         "8. Log out\n" +
-        "Please select an option (1-6): ";
+        "Please select an option (1-8): ";
         
         System.out.print(menu);
         choice = scanner.nextInt();  // Get user choice

@@ -141,7 +141,7 @@ public class Offering extends Record {
         try (var statement = connection.createStatement();
              var resultSet = statement.executeQuery(query)) {
     
-            System.out.println("Offerings:");
+            System.out.println("\nOfferings:\n");
             
             while (resultSet.next()) {
                 int offeringId = resultSet.getInt("offeringId");
