@@ -1,9 +1,8 @@
 package CodingImplementation.src;
-
+import database.DatabaseConnection;
 
 public class Location {
     private int ID;
-    private static int IDincrement = 1;
     private int scheduleId;
     private String locationName;
     private String city;
@@ -12,8 +11,10 @@ public class Location {
         this.locationName = locationName;
         this.scheduleId = scheduleId;
         this.city = city;
-        this.ID = IDincrement;
-        IDincrement++;
+
+        int lastId = DatabaseConnection.getLastIdFromTable("location", "locationId");
+        System.out.println("Last Location ID: " + lastId);
+        this.ID = lastId + 1;
     }
     public int getID() {
         return ID;

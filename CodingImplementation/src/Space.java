@@ -1,14 +1,14 @@
-
+import database.DatabaseConnection;
 
 public class Space {
 
     private int ID;
-    private static int IDincrement = 1;
     private Location location;
     public Space(Location location) {
         this.location = location;
-        this.ID = IDincrement;
-        IDincrement++;
+        int lastId = DatabaseConnection.getLastIdFromTable("space", "spaceId");
+        System.out.println("Last Space ID: " + lastId);
+        this.ID = lastId + 1;
     }
     public Location getLocation() {
         return location;

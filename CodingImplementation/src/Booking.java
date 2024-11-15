@@ -1,23 +1,18 @@
-package CodingImplementation.src;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
+import database.DatabaseConnection;
 
 public class Booking extends Record {
     private int offeringId;
     private int clientId;
     private int ID;
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private static final ReentrantReadWriteLock staticLock = new ReentrantReadWriteLock();
 
 
     public Booking(int ID, int offeringId, int clientId) {
         super();  // Call to parent class constructor if necessary
         this.offeringId = offeringId;
         this.clientId = clientId;
-        this.ID = ID;
+        int lastId = DatabaseConnection.getLastIdFromTable("booking", "bookingId");
+        System.out.println("Last Booking ID: " + lastId);
+        this.ID = lastId + 1;
     }
 
     public int getOfferingId() {
