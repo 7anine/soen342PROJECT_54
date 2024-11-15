@@ -134,7 +134,7 @@ public class Main {
                         System.out.println("Invalid choice. Please select a valid option.");
                         break;
                 }
-            } while (choice != 5);
+            } while (choice != 6);
         } catch (SQLException e) {
             System.err.println("Connection failed: " + e.getMessage());
         } finally {

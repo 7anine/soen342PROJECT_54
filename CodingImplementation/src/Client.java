@@ -348,10 +348,13 @@ public class Client extends Record {
                     int offeringId = resultSet.getInt("offeringId");
                     int lessonId = resultSet.getInt("lessonId");
                     int instructorId = resultSet.getInt("instructorId");
+                    int isAvailable = resultSet.getInt("isAvailable");
+
 
                     System.out.println("Offering ID: " + offeringId);
                     System.out.println("Lesson ID: " + lessonId);
                     System.out.println("instructor ID: " + instructorId);
+                    System.out.println("Offering is Available: " + isAvailable);
                     System.out.println("--------------------------");
 
                     offeringsFound = true;
@@ -389,11 +392,101 @@ public class Client extends Record {
 
         Booking booking = new Booking(bookingID, offeringId, this.ID);
 
-        if(!isOfferingOverlapping(offeringId)){
+        if(!isOfferingOverlapping(offeringId) && isOfferingAvailable(offeringId)){
             addBookingToDatabase(booking);
         }else{
-            System.out.println("You cannot book an offering that overlaps in date and time with one you have already booked.");
+            System.out.println("You cannot book this offering.");
         }
+    }
+
+    public boolean isOfferingAvailable(int offeringId) {
+        // Step 1: Fetch the lessonId for the given offering
+        String fetchLessonIdQuery = "SELECT lessonId FROM Offering WHERE offeringId = ?";
+        int lessonId = -1;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(fetchLessonIdQuery)) {
+
+            preparedStatement.setInt(1, offeringId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                lessonId = resultSet.getInt("lessonId");
+            } else {
+                System.out.println("Offering ID not found.");
+                return false; // No lessonId found, cannot proceed
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching lessonId for offering: " + e.getMessage());
+            return false;
+        }
+
+        // Step 2: Fetch the capacity and numberRegistered for the lesson
+        String fetchLessonDetailsQuery = "SELECT capacity, numberRegistered FROM Lesson WHERE lessonId = ?";
+        int capacity = 0;
+        int numberRegistered = 0;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(fetchLessonDetailsQuery)) {
+
+            preparedStatement.setInt(1, lessonId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                capacity = resultSet.getInt("capacity");
+                numberRegistered = resultSet.getInt("numberRegistered");
+            } else {
+                System.out.println("Lesson ID not found.");
+                return false; // No lesson details found, cannot proceed
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching lesson details: " + e.getMessage());
+            return false;
+        }
+
+        // Step 3: Check if capacity > numberRegistered
+        if (capacity > numberRegistered) {
+            // Step 4: Update isAvailable attribute in the Offering table
+            String updateIsAvailableQuery = "UPDATE Offering SET isAvailable = FALSE WHERE offeringId = ?";
+
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(updateIsAvailableQuery)) {
+
+                preparedStatement.setInt(1, offeringId);
+                int rowsUpdated = preparedStatement.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    System.out.println("isAvailable set to false for offering ID: " + offeringId);
+                } else {
+                    System.out.println("Failed to update isAvailable for offering ID: " + offeringId);
+                }
+            } catch (SQLException e) {
+                System.out.println("Error updating isAvailable attribute: " + e.getMessage());
+            }
+
+            // Step 5: Increment numberRegistered in the Lesson table
+            String incrementRegisteredQuery = "UPDATE Lesson SET numberRegistered = numberRegistered + 1 WHERE lessonId = ?";
+
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(incrementRegisteredQuery)) {
+
+                preparedStatement.setInt(1, lessonId);
+                int rowsUpdated = preparedStatement.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    System.out.println("numberRegistered incremented successfully for lesson ID: " + lessonId);
+                } else {
+                    System.out.println("Failed to increment numberRegistered for lesson ID: " + lessonId);
+                }
+            } catch (SQLException e) {
+                System.out.println("Error incrementing numberRegistered: " + e.getMessage());
+            }
+
+            return true; // Offering is available
+        }
+
+        System.out.println("Offering is not available for booking: FULL");
+        return false; // Offering is full
     }
 
     private void addBookingToDatabase(Booking booking) {
@@ -427,6 +520,7 @@ public class Client extends Record {
         }
     }
 
+
     public boolean isOfferingOverlapping(int selectedOfferingId) {
         lock.writeLock().lock();
         try{
@@ -434,7 +528,7 @@ public class Client extends Record {
 
 
         // Fetch the lessonId for the selected offering.
-        String getOfferingQuery = "SELECT lessonId FROM offering WHERE ID = ?";
+        String getOfferingQuery = "SELECT lessonId FROM offering WHERE offeringId = ?";
         int lessonId = -1;
 
             try (Connection connection = DatabaseConnection.getConnection();
