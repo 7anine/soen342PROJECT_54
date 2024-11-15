@@ -5,11 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import CodingImplementation.src.database.DatabaseConnection;
 
 public class Administrator extends Record {
     private int ID;  // Unique identifier for the administrator
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static final ReentrantReadWriteLock staticLock = new ReentrantReadWriteLock();
 
     public Administrator(int adminId) {
           // Call to parent class constructor if necessary
@@ -68,8 +71,9 @@ public class Administrator extends Record {
         "2. Cancel a Lesson\n" +
         "3. View Space Table\n" +
         "4. View Schedule Table\n" +
-        "5. View Location Table\n" +
-        "6. Log out\n" +
+        "5. View Location Table\n"+
+        "6. Delete Accounts\n" +
+        "7. Log out\n" +
         "Please select an option (1-6): ";
         
         System.out.print(menu);
@@ -94,15 +98,124 @@ public class Administrator extends Record {
                 displayLocationTable();
                 break;
             case 6:
+                deleteAccountMenu();
+                break;
+            case 7:
                 System.out.println("Logging out...");
                 break;
             default:
                 System.out.println("Invalid choice, please try again.");
         }
        
-    }while(choice!=6);
+    }while(choice!=7);
         
     }
+
+    private void deleteAccountMenu() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choose the type of account to delete:");
+        System.out.println("1. Client");
+        System.out.println("2. Instructor");
+        System.out.print("Enter your choice (1 or 2): ");
+        int accountType = scanner.nextInt();
+
+        switch (accountType) {
+            case 1:
+                displayClientTable();
+                System.out.print("Enter Client ID to delete: ");
+                int clientId = scanner.nextInt();
+                deleteAccountFromDB("Client", clientId);
+                break;
+            case 2:
+                displayInstructorTable();
+                System.out.print("Enter Instructor ID to delete: ");
+                int instructorId = scanner.nextInt();
+                deleteAccountFromDB("Instructor", instructorId);
+                break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+    }
+    private void displayClientTable() {
+        lock.readLock().lock();
+        String query = "SELECT * FROM Client";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            System.out.println("Client Table:");
+            while (resultSet.next()) {
+                int clientId = resultSet.getInt("clientId");
+                String name = resultSet.getString("name");
+                System.out.printf("Client ID: %d, Name: %s%n", clientId, name);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error displaying Client table: " + e.getMessage());
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    private void displayInstructorTable() {
+        lock.readLock().lock();
+        String query = "SELECT * FROM Instructor";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            System.out.println("Instructor Table:");
+            while (resultSet.next()) {
+                int instructorId = resultSet.getInt("instructorId");
+                String name = resultSet.getString("name");
+                System.out.printf("Instructor ID: %d, Name: %s%n", instructorId, name);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error displaying Instructor table: " + e.getMessage());
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    private void deleteAccountFromDB(String tableName, int id) {
+        lock.writeLock().lock();
+        String nameColumn = tableName.equals("Client") ? "name" : "name"; // assuming both tables use "name" column for names
+        String idColumn = tableName.equals("Client") ? "clientId" : "instructorId";
+        String queryGetName = "SELECT " + nameColumn + " FROM " + tableName + " WHERE " + idColumn + " = ?";
+        String queryDelete = "DELETE FROM " + tableName + " WHERE " + idColumn + " = ?";
+    
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement getNameStatement = connection.prepareStatement(queryGetName);
+             PreparedStatement deleteStatement = connection.prepareStatement(queryDelete)) {
+    
+            // First, get the name of the account to delete
+            getNameStatement.setInt(1, id);
+            ResultSet resultSet = getNameStatement.executeQuery();
+            String name = null;
+            
+            if (resultSet.next()) {
+                name = resultSet.getString(nameColumn);
+            }
+    
+            // Proceed with deletion if name was found
+            if (name != null) {
+                deleteStatement.setInt(1, id);
+                int rowsAffected = deleteStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    System.out.println(tableName + " account with ID " + id + " (" + name + ") deleted successfully.");
+                } else {
+                    System.out.println("No " + tableName + " account found with ID " + id + ".");
+                }
+            } else {
+                System.out.println("No " + tableName + " account found with ID " + id + ".");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting " + tableName + " account: " + e.getMessage());
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+    
+
      // Method to call createLesson() from Lesson class
      private void createLesson() {
         Scanner scanner = new Scanner(System.in);

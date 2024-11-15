@@ -22,7 +22,8 @@ public class Main {
                 System.out.println("2. Register as a Client");
                 System.out.println("3. Register as an Instructor");
                 System.out.println("4. Sign In as an Admin");
-                System.out.println("5. Quit");
+                System.out.println("5. View Offerings");
+                System.out.println("6. Quit");
 
                 System.out.print("Enter your choice (1-5): ");
                 while (!scanner.hasNextInt()) {
@@ -66,13 +67,9 @@ public class Main {
                                 int instructorPassword = scanner.nextInt();
                                 scanner.nextLine(); // Consume newline
                                 Instructor newInstructor = Instructor.instructorSignIn(instructorID, instructorPassword);
-<<<<<<< HEAD
-                                newInstructor.instructorPortal();
-=======
                                 if (newInstructor != null) {
                                     newInstructor.instructorPortal();
                                 }
->>>>>>> main
                                 break;
                             default:
                                 System.out.println("Invalid choice.");
@@ -128,6 +125,9 @@ public class Main {
                         }
                         break;
                     case 5:
+                        Offering.viewOfferings(connection);
+                        break;
+                    case 6:
                         System.out.println("Thank you for using The Lesson Link. Goodbye!");
                         break;
                     default:

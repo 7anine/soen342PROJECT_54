@@ -4,11 +4,14 @@ package CodingImplementation.src;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 public class Offering extends Record {
     private int ID;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static final ReentrantReadWriteLock staticLock = new ReentrantReadWriteLock();
 
     public int getID() {
         return ID;
@@ -120,6 +123,47 @@ public class Offering extends Record {
             }
         } catch (SQLException e) {
             System.err.println("Error deleting offering: " + e.getMessage());
+        }
+    }
+    public static void viewOfferings(Connection connection) {
+        staticLock.readLock().lock();
+        try{
+        String query = """
+            SELECT Offering.offeringId, Lesson.type, Schedule.date, Schedule.startTime, Schedule.endTime,
+                   Instructor.name AS instructorName, Offering.isAvailable
+            FROM Offering
+            INNER JOIN Lesson ON Offering.lessonId = Lesson.lessonId
+            INNER JOIN Schedule ON Lesson.scheduleId = Schedule.scheduleId
+            INNER JOIN Instructor ON Offering.instructorId = Instructor.instructorId;
+            """;
+           
+
+        try (var statement = connection.createStatement();
+             var resultSet = statement.executeQuery(query)) {
+    
+            System.out.println("Offerings:");
+            
+            while (resultSet.next()) {
+                int offeringId = resultSet.getInt("offeringId");
+                String lessonType = resultSet.getString("type");
+                String date = resultSet.getDate("date").toString();
+                String startTime = resultSet.getBigDecimal("startTime").toPlainString();
+                String endTime = resultSet.getBigDecimal("endTime").toPlainString();
+                String instructorName = resultSet.getString("instructorName");
+                boolean isAvailable = resultSet.getBoolean("isAvailable");
+    
+                // Format and display offering details
+                System.out.printf("Offering ID %d: A %s lesson scheduled on %s from %s to %s, taught by %s. Availability: %s.%n",
+                                  offeringId, lessonType, date, startTime, endTime, instructorName,
+                                  (isAvailable ? "Available" : "Not Available"));
+            }
+    
+        } catch (SQLException e) {
+            System.err.println("Error fetching offerings: " + e.getMessage());
+        }}
+        finally {
+            staticLock.readLock().unlock();  // Release the read lock
+            System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewOfferings.");
         }
     }
     
