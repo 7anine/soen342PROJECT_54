@@ -1,5 +1,5 @@
 package CodingImplementation.src;
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Location {
     private int ID;
