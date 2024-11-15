@@ -1,4 +1,4 @@
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Space {
 

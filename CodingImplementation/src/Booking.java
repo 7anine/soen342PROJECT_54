@@ -1,18 +1,31 @@
-import database.DatabaseConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Booking extends Record {
     private int offeringId;
     private int clientId;
     private int ID;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static final ReentrantReadWriteLock staticLock = new ReentrantReadWriteLock();
 
 
+    public Booking(int offeringId, int clientId) {
+        super();  // Call to parent class constructor if necessary
+        this.offeringId = offeringId;
+        this.clientId = clientId;
+        int lastId = CodingImplementation.src.database.DatabaseConnection.getLastIdFromTable("booking", "bookingId");
+        System.out.println("Last Booking ID: " + lastId);
+        this.ID = lastId + 1;
+    }
     public Booking(int ID, int offeringId, int clientId) {
         super();  // Call to parent class constructor if necessary
         this.offeringId = offeringId;
         this.clientId = clientId;
-        int lastId = DatabaseConnection.getLastIdFromTable("booking", "bookingId");
-        System.out.println("Last Booking ID: " + lastId);
-        this.ID = lastId + 1;
+        this.ID = ID;
     }
 
     public int getOfferingId() {
@@ -83,10 +96,10 @@ public class Booking extends Record {
     public static boolean cancelBooking(Connection connection, int bookingId) {
     staticLock.writeLock().lock(); // Lock for write operation
     String query = "DELETE FROM Booking WHERE bookingId = ?";
-    
+
     try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, bookingId);
-        
+
         int rowsAffected = statement.executeUpdate();
         return rowsAffected > 0; // Return true if booking was deleted
     } catch (SQLException e) {

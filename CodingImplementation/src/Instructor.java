@@ -1,5 +1,3 @@
-package CodingImplementation.src;
-
 import CodingImplementation.src.database.DatabaseConnection;
 
 
@@ -370,8 +368,11 @@ public class Instructor extends Record implements User{
                 try (Connection connection = DatabaseConnection.getConnection();
                      PreparedStatement statement = connection.prepareStatement(insertQuery)) {
 
-                    statement.setInt(1, Offering.getIDincrement());
-                    Offering.setIDincrement(Offering.getIDincrement() + 1);
+
+                    int lastId = DatabaseConnection.getLastIdFromTable("offering", "offeringId");
+                    System.out.println("Last Offering ID: " + lastId);
+                    statement.setInt(1, lastId + 1);
+
 
                     statement.setInt(2, lessonId);
                     statement.setInt(3, instructorID);

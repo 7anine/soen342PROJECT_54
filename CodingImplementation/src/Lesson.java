@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +17,20 @@ public class Lesson {
     private int ID;
 
 
+    public Lesson(String type, int scheduleId,int locationId, String privacy, int spaceId, int capacity) {
+        this.type = type;
+        this.scheduleId = scheduleId;
+        this.spaceId = spaceId;
+        this.privacy = privacy;
+        this.locationId = locationId;
+        this.assignedInstructor = false;
+        this.capacity = capacity;
+        this.numberRegistered = 0;
+        int lastId = DatabaseConnection.getLastIdFromTable("lesson", "lessonId");
+        System.out.println("Last Lesson ID: " + lastId);
+
+        this.ID = lastId + 1;
+    }
     public Lesson(int ID, String type, int scheduleId,int locationId, String privacy, int spaceId, int capacity) {
         this.type = type;
         this.scheduleId = scheduleId;
@@ -96,7 +109,6 @@ public class Lesson {
         addLessonToDB(this);  
         System.out.println("Lesson Created: " + type + " (Schedule ID: " + scheduleId + ", Location ID: " + locationId + 
                         ", Privacy: " + privacy + ", Space ID: " + spaceId + ")");
-                        
     }
 
     public void addLessonToDB(Lesson lesson){

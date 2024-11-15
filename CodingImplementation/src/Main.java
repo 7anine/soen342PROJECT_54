@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 import java.util.Scanner;
 import java.sql.Connection;
