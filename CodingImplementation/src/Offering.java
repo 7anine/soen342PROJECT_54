@@ -8,20 +8,27 @@ import database.DatabaseConnection;
 public class Offering extends Record {
     private int ID;
 
+    private int lessonId;
+    private int instructorId;
+    private boolean isAvailable;
+
+
+    public Offering( String location, int lessonId, int instructorId) {
+        super();  // Call to parent class constructor if necessary
+        this.lessonId = lessonId;
+        this.instructorId = instructorId;
+        this.isAvailable = true;
+        int lastId = DatabaseConnection.getLastIdFromTable("offering", "offeringId");
+        System.out.println("Last Offering ID: " + lastId);
+
+        this.ID = lastId + 1;
+    }
     public int getID() {
         return ID;
     }
 
     public void setID(int ID) {
         this.ID = ID;
-    }
-
-    public static int getIDincrement() {
-        return IDincrement;
-    }
-
-    public static void setIDincrement(int IDincrement) {
-        Offering.IDincrement = IDincrement;
     }
 
     public void setLessonId(int lessonId) {
@@ -38,21 +45,6 @@ public class Offering extends Record {
 
     public void setAvailable(boolean available) {
         isAvailable = available;
-    }
-
-    private static int IDincrement = 1;
-    private int lessonId;
-    private int instructorId;
-    private boolean isAvailable;
-    
-
-    public Offering( String location, int lessonId, int instructorId) {
-        super();  // Call to parent class constructor if necessary
-        this.lessonId = lessonId;
-        this.instructorId = instructorId;
-        this.isAvailable = true;
-        this.ID = IDincrement;
-        IDincrement++;
     }
 
     public int getOfferingId() {

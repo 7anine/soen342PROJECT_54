@@ -1,18 +1,18 @@
-
+import database.DatabaseConnection;
 
 public class Booking extends Record {
     private int offeringId;
     private int clientId;
     private int ID;
-    private static int IDincrement = 1;
 
 
     public Booking(int offeringId, int clientId) {
         super();  // Call to parent class constructor if necessary
         this.offeringId = offeringId;
         this.clientId = clientId;
-        this.ID = IDincrement;
-        IDincrement++;
+        int lastId = DatabaseConnection.getLastIdFromTable("booking", "bookingId");
+        System.out.println("Last Booking ID: " + lastId);
+        this.ID = lastId + 1;
     }
 
     public int getOfferingId() {

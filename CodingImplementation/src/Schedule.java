@@ -1,8 +1,7 @@
-
+import database.DatabaseConnection;
 
 public class Schedule {
     private int ID;
-    private static int IDincrement = 1;
     private String day;
     private String startTime;
     private String endTime;
@@ -13,8 +12,11 @@ public class Schedule {
         this.day = day;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.ID = IDincrement;
-        IDincrement++;
+
+        int lastId = DatabaseConnection.getLastIdFromTable("schedule", "scheduleId");
+        System.out.println("Last Schedule ID: " + lastId);
+
+        this.ID = lastId + 1;
     }
     public int getID() {
         return ID;

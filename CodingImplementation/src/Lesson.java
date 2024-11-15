@@ -15,7 +15,6 @@ public class Lesson {
     private int capacity;
     private int numberRegistered;
     private int ID;
-    private static int IDincrement = 1;
 
 
     public Lesson(String type, int scheduleId,int locationId, String privacy, int spaceId, int capacity) {
@@ -27,8 +26,10 @@ public class Lesson {
         this.assignedInstructor = false;
         this.capacity = capacity;
         this.numberRegistered = 0;
-        this.ID = IDincrement;
-        IDincrement++;
+        int lastId = DatabaseConnection.getLastIdFromTable("lesson", "lessonId");
+        System.out.println("Last Lesson ID: " + lastId);
+
+        this.ID = lastId + 1;
     }
 
     public String getType() {

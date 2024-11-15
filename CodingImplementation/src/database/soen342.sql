@@ -1,6 +1,6 @@
 -- This SQL File creates all the tables necessary for our projects.
 -- Create database
--- CREATE DATABASE soen342;
+ CREATE DATABASE soen342;
 
 -- Use the created database
 USE soen342;
@@ -107,10 +107,10 @@ FOREIGN KEY (offeringId) REFERENCES Offering(offeringId)
 ON DELETE CASCADE;
 
 ALTER TABLE Client
-ADD COLUMN password VARCHAR(255) NOT NULL;
+ADD COLUMN password VARCHAR(255);
 
 ALTER TABLE Instructor
-    ADD COLUMN password VARCHAR(255) NOT NULL;
+    ADD COLUMN password VARCHAR(255);
 
 INSERT INTO Administrator (adminId) VALUES (12345); --Set admin Id
 
