@@ -1,4 +1,3 @@
-package CodingImplementation.src;
 
 import java.sql.*;
 import java.util.Scanner;
@@ -359,14 +358,7 @@ public class Client extends Record {
                     return;
                 }
 
-                System.out.print("Enter the Offering ID to create a new booking, or enter 0 to go back: ");
-                int selectedId = scanner.nextInt();
 
-                if (selectedId == 0) {
-                    return; // Go back to client portal menu
-                } else {
-                    handleOfferingSelection(selectedId);
-                }
 
             } catch (SQLException e) {
                 System.err.println("Error fetching offerings: " + e.getMessage());
@@ -374,6 +366,15 @@ public class Client extends Record {
         } finally {
             lock.readLock().unlock(); // Release the instance-level write lock
             System.out.println(Thread.currentThread().getName() + " finished reading to the database from method viewOfferings");
+        }
+
+        System.out.print("Enter the Offering ID to create a new booking, or enter 0 to go back: ");
+        int selectedId = scanner.nextInt();
+
+        if (selectedId == 0) {
+            return; // Go back to client portal menu
+        } else {
+            handleOfferingSelection(selectedId);
         }
     }
 
@@ -423,97 +424,108 @@ public class Client extends Record {
     }
 
     public boolean isOfferingOverlapping(int selectedOfferingId) {
+        lock.writeLock().lock();
+        try{
+            System.out.println(Thread.currentThread().getName() + " is writing to the database from method isOfferingOverlapping");
 
-        // Fetch the lessonId for the selected offering.
-        String getOfferingQuery = "SELECT lessonId FROM Offering WHERE ID = ?";
-        int lessonId = -1;
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(getOfferingQuery)) {
+                // Fetch the lessonId for the selected offering
+            String getOfferingQuery = "SELECT lessonId FROM Offering WHERE offeringId = ?";
+            int lessonId = -1;
 
-            preparedStatement.setInt(1, selectedOfferingId);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(getOfferingQuery)) {
 
-            if (resultSet.next()) {
-                lessonId = resultSet.getInt("lessonId");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error fetching offering details: " + e.getMessage());
-            return false;
-        }
+                preparedStatement.setInt(1, selectedOfferingId);
+                ResultSet resultSet = preparedStatement.executeQuery();
 
-        // Fetch the scheduleId for the lesson from the Lesson table
-        String getLessonQuery = "SELECT scheduleId FROM Lesson WHERE lessonId = ?";
-        int scheduleId = -1;
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(getLessonQuery)) {
-
-            preparedStatement.setInt(1, lessonId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                scheduleId = resultSet.getInt("scheduleId");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error fetching lesson details: " + e.getMessage());
-            return false;
-        }
-
-        // Fetch the start time, end time, and date of the schedule
-        String getScheduleQuery = "SELECT startTime, endTime, date FROM Schedule WHERE scheduleId = ?";
-        String newStartTime = null;
-        String newEndTime = null;
-        String newDate = null;
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(getScheduleQuery)) {
-
-            preparedStatement.setInt(1, scheduleId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                newStartTime = resultSet.getString("startTime");
-                newEndTime = resultSet.getString("endTime");
-                newDate = resultSet.getString("date");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error fetching schedule details: " + e.getMessage());
-            return false;
-        }
-
-        // Check for overlapping schedule
-        // Now we need to check for overlap with any other offerings
-        String checkOverlapQuery = "SELECT S.startTime, S.endTime, S.date FROM Schedule S " +
-                "JOIN Lesson L ON S.scheduleId = L.scheduleId " +
-                "JOIN Offering O ON L.lessonId = O.lessonId " +
-                "WHERE O.ID != ?";  // Excluding the current offering
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(checkOverlapQuery)) {
-
-            preparedStatement.setInt(1, selectedOfferingId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                String existingStartTime = resultSet.getString("startTime");
-                String existingEndTime = resultSet.getString("endTime");
-                String existingDate = resultSet.getString("date");
-
-                // Compare schedules for overlap based on date, startTime, and endTime
-                if (newDate.equals(existingDate) &&
-                        (newStartTime.compareTo(existingEndTime) < 0 && newEndTime.compareTo(existingStartTime) > 0)) {
-                    // using AND since one similarity is fine, as long they are not ALL equal
-                    // If there's an overlap in time
-                    return true;
+                if (resultSet.next()) {
+                    lessonId = resultSet.getInt("lessonId");
                 }
+            } catch (SQLException e) {
+                System.out.println("Error fetching offering details: " + e.getMessage());
+                return false;
             }
-        } catch (SQLException e) {
-            System.out.println("Error checking for overlapping schedules: " + e.getMessage());
+
+            // Fetch the scheduleId for the lesson from the Lesson table
+            String getLessonQuery = "SELECT scheduleId FROM Lesson WHERE lessonId = ?";
+            int scheduleId = -1;
+
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(getLessonQuery)) {
+
+                preparedStatement.setInt(1, lessonId);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    scheduleId = resultSet.getInt("scheduleId");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error fetching lesson details: " + e.getMessage());
+                return false;
+            }
+
+            // Fetch the start time, end time, and date of the schedule
+            String getScheduleQuery = "SELECT startTime, endTime, date FROM Schedule WHERE scheduleId = ?";
+            String newStartTime = null;
+            String newEndTime = null;
+            String newDate = null;
+
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(getScheduleQuery)) {
+
+                preparedStatement.setInt(1, scheduleId);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    newStartTime = resultSet.getString("startTime");
+                    newEndTime = resultSet.getString("endTime");
+                    newDate = resultSet.getString("date");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error fetching schedule details: " + e.getMessage());
+                return false;
+            }
+
+            // Check for overlapping schedule
+            // Now we need to check for overlap with any other offerings
+            String checkOverlapQuery = "SELECT S.startTime, S.endTime, S.date FROM Schedule S " +
+                    "JOIN Lesson L ON S.scheduleId = L.scheduleId " +
+                    "JOIN Offering O ON L.lessonId = O.lessonId " +
+                    "WHERE O.offeringId != ?";
+            // TODO: currently excluding the current offering. Do we keep that?
+
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(checkOverlapQuery)) {
+
+                preparedStatement.setInt(1, selectedOfferingId);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    String existingStartTime = resultSet.getString("startTime");
+                    String existingEndTime = resultSet.getString("endTime");
+                    String existingDate = resultSet.getString("date");
+
+                    // Compare schedules for overlap based on date, startTime, and endTime
+                    if (newDate.equals(existingDate) &&
+                            (newStartTime.compareTo(existingEndTime) < 0 && newEndTime.compareTo(existingStartTime) > 0)) {
+                        // If there's an overlap in time on the same date
+                        System.out.println("Overlap in schedules found...");
+                        return true;
+                    }
+                }
+            } catch (SQLException e) {
+                System.out.println("Error checking for overlapping schedules: " + e.getMessage());
+            }
+            } finally {
+            lock.writeLock().unlock();
+            System.out.println(Thread.currentThread().getName() + " finished writing to database from method isOfferingOverlapping.");
         }
+        System.out.println("No Schedule Overlap!");
 
         return false;  // No overlap found
     }
+
 
     public void viewMyBooking(Connection connection) {
         lock.readLock().lock();
