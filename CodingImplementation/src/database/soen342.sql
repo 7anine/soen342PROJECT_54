@@ -78,7 +78,7 @@ CREATE TABLE Offering (
     offeringId INT PRIMARY KEY,
     lessonId INT,
     instructorId INT,
-    isAvailable BOOLEAN,
+    isAvailable BOOLEAN DEFAULT(TRUE),
     FOREIGN KEY (lessonId) REFERENCES Lesson(lessonId), 
     FOREIGN KEY (instructorId) REFERENCES Instructor(instructorId)
 );
