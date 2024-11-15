@@ -31,6 +31,17 @@ public class Lesson {
 
         this.ID = lastId + 1;
     }
+    public Lesson(int ID, String type, int scheduleId,int locationId, String privacy, int spaceId, int capacity) {
+        this.type = type;
+        this.scheduleId = scheduleId;
+        this.spaceId = spaceId;
+        this.privacy = privacy;
+        this.locationId = locationId;
+        this.assignedInstructor = false;
+        this.capacity = capacity;
+        this.numberRegistered = 0;
+        this.ID = ID;
+    }
 
     public String getType() {
         return type;

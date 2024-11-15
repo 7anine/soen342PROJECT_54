@@ -3,7 +3,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Booking extends Record {
     private int offeringId;
@@ -20,6 +20,12 @@ public class Booking extends Record {
         int lastId = CodingImplementation.src.database.DatabaseConnection.getLastIdFromTable("booking", "bookingId");
         System.out.println("Last Booking ID: " + lastId);
         this.ID = lastId + 1;
+    }
+    public Booking(int ID, int offeringId, int clientId) {
+        super();  // Call to parent class constructor if necessary
+        this.offeringId = offeringId;
+        this.clientId = clientId;
+        this.ID = ID;
     }
 
     public int getOfferingId() {
