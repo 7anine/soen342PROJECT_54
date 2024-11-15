@@ -1,9 +1,9 @@
-package CodingImplementation.src;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import database.DatabaseConnection;
 
 public class Booking extends Record {
     private int offeringId;
@@ -13,11 +13,13 @@ public class Booking extends Record {
     private static final ReentrantReadWriteLock staticLock = new ReentrantReadWriteLock();
 
 
-    public Booking(int ID, int offeringId, int clientId) {
+    public Booking(int offeringId, int clientId) {
         super();  // Call to parent class constructor if necessary
         this.offeringId = offeringId;
         this.clientId = clientId;
-        this.ID = ID;
+        int lastId = CodingImplementation.src.database.DatabaseConnection.getLastIdFromTable("booking", "bookingId");
+        System.out.println("Last Booking ID: " + lastId);
+        this.ID = lastId + 1;
     }
 
     public int getOfferingId() {
@@ -88,10 +90,10 @@ public class Booking extends Record {
     public static boolean cancelBooking(Connection connection, int bookingId) {
     staticLock.writeLock().lock(); // Lock for write operation
     String query = "DELETE FROM Booking WHERE bookingId = ?";
-    
+
     try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, bookingId);
-        
+
         int rowsAffected = statement.executeUpdate();
         return rowsAffected > 0; // Return true if booking was deleted
     } catch (SQLException e) {

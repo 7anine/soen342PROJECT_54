@@ -178,18 +178,21 @@ public class Client extends Record {
 
         Client guardian = new Client(name, age, email);
 
+        int newGuardianID = guardian.getID();
+
         lock.writeLock().lock();
         try {
                 System.out.println(Thread.currentThread().getName() + " is writing to the database from method requestGuardian" );
 
                 // Insert guardian information into the database and retrieve the GuardianID
             try (Connection connection = DatabaseConnection.getConnection()) {
-                String insertGuardianSQL = "INSERT INTO Client (name, age, email) VALUES (?, ?, ?)";
+                String insertGuardianSQL = "INSERT INTO Client (clientId, name, age, email) VALUES (?, ?, ?, ?)";
 
                 try (PreparedStatement statement = connection.prepareStatement(insertGuardianSQL, Statement.RETURN_GENERATED_KEYS)) {
-                    statement.setString(1, name);
-                    statement.setInt(2, age);
-                    statement.setString(3, email);
+                    statement.setInt(1, newGuardianID);
+                    statement.setString(2, name);
+                    statement.setInt(3, age);
+                    statement.setString(4, email);
                     statement.executeUpdate();
 
                     // Retrieve the generated guardian ID
