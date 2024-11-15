@@ -380,8 +380,9 @@ public class Client extends Record {
     private void handleOfferingSelection(int offeringId) {
         System.out.println("You selected offering ID: " + offeringId);
         System.out.println("Creating a new booking for you...");
+        int bookingID = DatabaseConnection.getLastIdFromTable("Booking","bookingId") + 1;
 
-        Booking booking = new Booking(offeringId, this.ID);
+        Booking booking = new Booking(bookingID, offeringId, this.ID);
 
         if(!isOfferingOverlapping(offeringId)){
             addBookingToDatabase(booking);
@@ -512,6 +513,46 @@ public class Client extends Record {
         }
 
         return false;  // No overlap found
+    }
+
+    public void viewMyBooking(Connection connection) {
+        lock.readLock().lock();
+        try {
+            String query = """
+                SELECT Booking.bookingId, Lesson.type, Schedule.date, Instructor.name AS instructorName
+                FROM Booking
+                INNER JOIN Offering ON Booking.offeringId = Offering.offeringId
+                INNER JOIN Lesson ON Offering.lessonId = Lesson.lessonId
+                INNER JOIN Schedule ON Lesson.scheduleId = Schedule.scheduleId
+                INNER JOIN Instructor ON Lesson.instructorId = Instructor.instructorId
+                WHERE Booking.clientId = ?;
+                """;
+
+            try (var preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setInt(1, this.ID);
+                try (var resultSet = preparedStatement.executeQuery()) {
+
+                    System.out.println("Your Bookings:");
+
+                    while (resultSet.next()) {
+                        int bookingId = resultSet.getInt("bookingId");
+                        String lessonType = resultSet.getString("type");
+                        String date = resultSet.getDate("date").toString();
+                        String instructorName = resultSet.getString("instructorName");
+
+                        // Format and display booking details
+                        System.out.printf("Booking ID %d: You have booked a %s lesson on %s, taught by %s.%n",
+                                bookingId, lessonType, date, instructorName);
+                    }
+
+                }
+            } catch (SQLException e) {
+                System.err.println("Error fetching your bookings: " + e.getMessage());
+            }
+        } finally {
+            lock.readLock().unlock();
+            System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewMyBooking.");
+        }
     }
 
 }

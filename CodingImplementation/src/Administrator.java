@@ -73,7 +73,8 @@ public class Administrator extends Record {
         "4. View Schedule Table\n" +
         "5. View Location Table\n"+
         "6. Delete Accounts\n" +
-        "7. Log out\n" +
+        "7. Manage Bookings\n"+
+        "8. Log out\n" +
         "Please select an option (1-6): ";
         
         System.out.print(menu);
@@ -100,14 +101,48 @@ public class Administrator extends Record {
             case 6:
                 deleteAccountMenu();
                 break;
-            case 7:
+                case 7:
+                System.out.println("Manage Bookings:");
+                try (Connection connection = DatabaseConnection.getConnection()) {
+                    // Display all bookings by calling the static method
+                    Booking.viewBookingByAdmin(connection);
+                } catch (SQLException e) {
+                    System.err.println("Error connecting to the database: " + e.getMessage());
+                    break;
+                }
+            
+                // Prompt the admin to either cancel a booking or exit
+                boolean continueManaging = true;
+                while (continueManaging) {
+                    System.out.print("\nEnter the Booking ID to cancel, or 0 to return to the main menu: ");
+                    int bookingId = scanner.nextInt();
+                    
+                    if (bookingId == 0) {
+                        continueManaging = false; // Exit booking management
+                    } else {
+                        try (Connection connection = DatabaseConnection.getConnection()) {
+                            boolean cancelled = Booking.cancelBooking(connection, bookingId);
+                            
+                            if (cancelled) {
+                                System.out.println("Booking ID " + bookingId + " cancelled successfully.");
+                            } else {
+                                System.out.println("Failed to cancel booking. Ensure the Booking ID is correct.");
+                            }
+                        } catch (SQLException e) {
+                            System.err.println("Error canceling booking: " + e.getMessage());
+                        }
+                    }
+                }
+                break;
+            
+            case 8:
                 System.out.println("Logging out...");
                 break;
             default:
                 System.out.println("Invalid choice, please try again.");
         }
        
-    }while(choice!=7);
+    }while(choice!=8);
         
     }
 
