@@ -1,5 +1,4 @@
-package CodingImplementation.src;
-import database.DatabaseConnection;
+import CodingImplementation.src.database.DatabaseConnection;
 
 public class Location {
     private int ID;
@@ -13,7 +12,7 @@ public class Location {
         this.city = city;
 
         int lastId = DatabaseConnection.getLastIdFromTable("location", "locationId");
-        System.out.println("Last Location ID: " + lastId);
+        //System.out.println("Last Location ID: " + lastId);
         this.ID = lastId + 1;
     }
     public int getID() {

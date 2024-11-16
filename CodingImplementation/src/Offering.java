@@ -23,7 +23,7 @@ public class Offering extends Record {
         this.instructorId = instructorId;
         this.isAvailable = true;
         int lastId = DatabaseConnection.getLastIdFromTable("offering", "offeringId");
-        System.out.println("Last Offering ID: " + lastId);
+        //System.out.println("Last Offering ID: " + lastId);
 
         this.ID = lastId + 1;
     }
@@ -154,7 +154,7 @@ public class Offering extends Record {
         }}
         finally {
             staticLock.readLock().unlock();  // Release the read lock
-            System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewOfferings.");
+            //System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewOfferings.");
         }
     }
     

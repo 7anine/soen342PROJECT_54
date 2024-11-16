@@ -27,7 +27,7 @@ public class Lesson {
         this.capacity = capacity;
         this.numberRegistered = 0;
         int lastId = DatabaseConnection.getLastIdFromTable("lesson", "lessonId");
-        System.out.println("Last Lesson ID: " + lastId);
+        //System.out.println("Last Lesson ID: " + lastId);
 
         this.ID = lastId + 1;
     }

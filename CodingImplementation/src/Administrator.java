@@ -59,90 +59,88 @@ public class Administrator extends Record {
 
      // Admin panel method to display the menu
     public void adminPanel() {
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-        
-        do{
-        // Display the menu options
-        String menu = 
-        "Admin Panel\n" +
-        "1. Create a Lesson\n" +
-        "2. Manage Lessons\n" +
-        "3. View Space Table\n" +
-        "4. View Schedule Table\n" +
-        "5. View Location Table\n"+
-        "6. Manage Accounts\n" +
-        "7. Manage Bookings\n"+
-        "8. Log out\n" +
-        "Please select an option (1-8): ";
-        
-        System.out.print(menu);
-        choice = scanner.nextInt();  // Get user choice
-       
-        
-        switch (choice) {
-            case 1:
-                createLesson();
-                break;
-            case 2:
-                // Call cancelLesson() method in Lesson class
-                //cancelLesson();
-                break;
-            case 3:
-                displaySpaceTable();
-                break;
-            case 4:
-                displayScheduleTable();
-                break;
-            case 5:
-                displayLocationTable();
-                break;
-            case 6:
-                deleteAccountMenu();
-                break;
-                case 7:
-                System.out.println("Manage Bookings:");
-                try (Connection connection = DatabaseConnection.getConnection()) {
-                    // Display all bookings by calling the static method
-                    Booking.viewBookingByAdmin(connection);
-                } catch (SQLException e) {
-                    System.err.println("Error connecting to the database: " + e.getMessage());
-                    break;
-                }
-            
-                // Prompt the admin to either cancel a booking or exit
-                boolean continueManaging = true;
-                while (continueManaging) {
-                    System.out.print("\nEnter the Booking ID to cancel, or 0 to return to the main menu: ");
-                    int bookingId = scanner.nextInt();
-                    
-                    if (bookingId == 0) {
-                        continueManaging = false; // Exit booking management
-                    } else {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            int choice;
+
+            do {
+                // Display the menu options
+                String menu =
+                        "Admin Panel\n" +
+                                "1. Create a Lesson\n" +
+                                "2. View Space Table\n" +
+                                "3. View Schedule Table\n" +
+                                "4. View Location Table\n" +
+                                "5. Manage Accounts\n" +
+                                "6. Manage Bookings\n" +
+                                "7. Log out\n" +
+                                "Please select an option (1-7): ";
+
+                System.out.print(menu);
+                choice = scanner.nextInt();  // Get user choice
+
+                switch (choice) {
+                    case 1:
+                        createLesson();
+                        break;
+                    case 2:
+                        displaySpaceTable();
+                        break;
+                    case 3:
+                        displayScheduleTable();
+                        break;
+                    case 4:
+                        displayLocationTable();
+                        break;
+                    case 5:
+                        deleteAccountMenu();
+                        break;
+                    case 6:
+                        System.out.println("Manage Bookings:");
                         try (Connection connection = DatabaseConnection.getConnection()) {
-                            boolean cancelled = Booking.cancelBooking(connection, bookingId);
-                            
-                            if (cancelled) {
-                                System.out.println("Booking ID " + bookingId + " cancelled successfully.");
-                            } else {
-                                System.out.println("Failed to cancel booking. Ensure the Booking ID is correct.");
-                            }
+                            // Display all bookings by calling the static method
+                            Booking.viewBookingByAdmin(connection);
                         } catch (SQLException e) {
-                            System.err.println("Error canceling booking: " + e.getMessage());
+                            System.err.println("Error connecting to the database: " + e.getMessage());
+                            break;
                         }
-                    }
+
+                        // Prompt the admin to either cancel a booking or exit
+                        boolean continueManaging = true;
+                        while (continueManaging) {
+                            System.out.print("\nEnter the Booking ID to cancel, or 0 to return to the main menu: ");
+                            int bookingId = scanner.nextInt();
+
+                            if (bookingId == 0) {
+                                continueManaging = false; // Exit booking management
+                            } else {
+                                try (Connection connection = DatabaseConnection.getConnection()) {
+                                    boolean cancelled = Booking.cancelBooking(connection, bookingId);
+
+                                    if (cancelled) {
+                                        System.out.println("Booking ID " + bookingId + " cancelled successfully.");
+                                    } else {
+                                        System.out.println("Failed to cancel booking. Ensure the Booking ID is correct.");
+                                    }
+                                } catch (SQLException e) {
+                                    System.err.println("Error canceling booking: " + e.getMessage());
+                                }
+                            }
+                        }
+                        break;
+
+                    case 7:
+                        System.out.println("Logging out...");
+                        break;
+                    default:
+                        System.out.println("Invalid choice, please try again.");
+                        break;
                 }
-                break;
-            
-            case 8:
-                System.out.println("Logging out...");
-                break;
-            default:
-                System.out.println("Invalid choice, please try again.");
+
+            } while (choice != 7);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
         }
-       
-    }while(choice!=8);
-        
     }
 
     private void deleteAccountMenu() {
@@ -288,7 +286,6 @@ public class Administrator extends Record {
         scanner.nextLine(); // Consume newline
 
         System.out.println("Lesson created successfully!");
-        scanner.close();
     }
     // Method to display the Space table
     private void displaySpaceTable() {

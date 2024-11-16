@@ -23,7 +23,7 @@ public class DatabaseConnection {
 
             if (resultSet.next()) {
                 lastId = resultSet.getInt(1); // Get the first column of the last row
-                System.out.println("got: " + lastId);
+                //System.out.println("got: " + lastId);
             }
 
         } catch (SQLException e) {
