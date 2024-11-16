@@ -14,7 +14,7 @@ public class Schedule {
         this.endTime = endTime;
 
         int lastId = DatabaseConnection.getLastIdFromTable("schedule", "scheduleId");
-        System.out.println("Last Schedule ID: " + lastId);
+        //System.out.println("Last Schedule ID: " + lastId);
 
         this.ID = lastId + 1;
     }

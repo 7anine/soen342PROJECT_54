@@ -7,6 +7,8 @@ import CodingImplementation.src.database.DatabaseConnection;
 
 public class Main {
     public static void main(String[] args) {
+        try{
+
         Scanner scanner = new Scanner(System.in);
         int choice;
 
@@ -140,6 +142,10 @@ public class Main {
         } finally {
             scanner.close();
             System.gc(); // Suggest garbage collection, though it's managed by JVM
+        }
+
+        }catch(Exception e){
+            System.out.println(e.getMessage());
         }
     }
 }

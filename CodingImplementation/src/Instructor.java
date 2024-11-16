@@ -27,7 +27,7 @@ public class Instructor extends Record implements User{
         this.cities = cities;
         this.phoneNumber = phoneNumber;
         int lastInstructorId = DatabaseConnection.getLastIdFromTable("instructor", "instructorId");
-        System.out.println("Last Client ID: " + lastInstructorId);
+        //System.out.println("Last Client ID: " + lastInstructorId);
 
         this.ID = lastInstructorId + 1;
     }
@@ -105,7 +105,7 @@ public class Instructor extends Record implements User{
 
         lock.writeLock().lock();
         try {
-            System.out.println(Thread.currentThread().getName() + " is writing to the database from method createInstructorAccount" );
+            //System.out.println(Thread.currentThread().getName() + " is writing to the database from method createInstructorAccount" );
 
                 // Insert into database
             String insertQuery = "INSERT INTO Instructor (instructorId, name, specialization, phoneNumber, cities, password) " +
@@ -147,7 +147,7 @@ public class Instructor extends Record implements User{
 
             staticLock.readLock().lock();
             try {
-                System.out.println(Thread.currentThread().getName() + " is reading from database from method instructorSignIn");
+                //System.out.println(Thread.currentThread().getName() + " is reading from database from method instructorSignIn");
 
 
                     String selectQuery = "SELECT instructorId, name, specialization, phoneNumber, cities FROM Instructor WHERE instructorId = ?";
@@ -189,7 +189,7 @@ public class Instructor extends Record implements User{
 
         staticLock.readLock().lock();  // Acquire the read lock
         try {
-            System.out.println(Thread.currentThread().getName() + " is reading from database from method validPassword");
+            //System.out.println(Thread.currentThread().getName() + " is reading from database from method validPassword");
 
 
             String selectQuery = "SELECT password FROM Instructor WHERE instructorId = ?";
@@ -253,7 +253,7 @@ public class Instructor extends Record implements User{
 
         lock.readLock().lock();
         try{
-            System.out.println(Thread.currentThread().getName() + " is reading from the database from method viewAllLessons");
+            //System.out.println(Thread.currentThread().getName() + " is reading from the database from method viewAllLessons");
 
 
                 String query = "SELECT * FROM Lesson";
@@ -322,7 +322,7 @@ public class Instructor extends Record implements User{
 
         lock.writeLock().lock();
         try {
-            System.out.println(Thread.currentThread().getName() + " is writing to the database from method createOfferingForLesson");
+            //System.out.println(Thread.currentThread().getName() + " is writing to the database from method createOfferingForLesson");
 
             // Step 1: Retrieve the lesson's location city
             String lessonCity = null;
@@ -372,7 +372,7 @@ public class Instructor extends Record implements User{
 
 
                     int lastId = DatabaseConnection.getLastIdFromTable("offering", "offeringId");
-                    System.out.println("Last Offering ID: " + lastId);
+                    //System.out.println("Last Offering ID: " + lastId);
                     statement.setInt(1, lastId + 1);
 
 

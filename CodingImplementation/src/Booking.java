@@ -20,7 +20,7 @@ public class Booking extends Record {
         this.offeringId = offeringId;
         this.clientId = clientId;
         int lastId = CodingImplementation.src.database.DatabaseConnection.getLastIdFromTable("booking", "bookingId");
-        System.out.println("Last Booking ID: " + lastId);
+        //System.out.println("Last Booking ID: " + lastId);
         this.ID = lastId + 1;
     }
     public Booking(int ID, int offeringId, int clientId) {
@@ -91,8 +91,7 @@ public class Booking extends Record {
             }
         } finally {
             staticLock.readLock().unlock();
-            
-        //System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewBookingByAdmin.");
+            //System.out.println(Thread.currentThread().getName() + " finished reading from database from method viewBookingByAdmin.");
         }
     }
     //Cancel a booking via id
@@ -110,7 +109,7 @@ public class Booking extends Record {
         return false;
     } finally {
         staticLock.writeLock().unlock(); // Release the lock
-        //System.out.println(Thread.currentThread().getName() + " finished write operation in cancelBooking.");
+                //System.out.println(Thread.currentThread().getName() + " finished write operation in cancelBooking.");
     }
 }
 

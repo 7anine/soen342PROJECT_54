@@ -32,7 +32,7 @@ public class Client extends Record {
         }
 
         int lastClientId = DatabaseConnection.getLastIdFromTable("client", "clientId");
-        System.out.println("Last Client ID: " + lastClientId);
+        //System.out.println("Last Client ID: " + lastClientId);
 
         this.ID = lastClientId + 1;
     }
@@ -118,7 +118,7 @@ public class Client extends Record {
 
         lock.writeLock().lock();
         try {
-            System.out.println(Thread.currentThread().getName() + " is writing to the database from method createClientAccount" );
+            //System.out.println(Thread.currentThread().getName() + " is writing to the database from method createClientAccount" );
 
             // Insert into database
             String insertQuery = "INSERT INTO Client (clientId, name, age, email, isOver18, guardianClientId, password) " +
@@ -158,6 +158,7 @@ public class Client extends Record {
         } finally {
             lock.writeLock().unlock();  // Release the read lock
             //System.out.println(Thread.currentThread().getName() + " finished writing to the database from method createClientAccount");
+            //System.out.println(Thread.currentThread().getName() + " finished writing to the database from method createClientAccount");
         }
     }
 
@@ -179,7 +180,7 @@ public class Client extends Record {
 
         lock.writeLock().lock();
         try {
-                System.out.println(Thread.currentThread().getName() + " is writing to the database from method requestGuardian" );
+                //System.out.println(Thread.currentThread().getName() + " is writing to the database from method requestGuardian" );
 
                 // Insert guardian information into the database and retrieve the GuardianID
             try (Connection connection = DatabaseConnection.getConnection()) {
@@ -205,7 +206,7 @@ public class Client extends Record {
                             updateStatement.executeUpdate();
                         }
                     } else {
-                        System.out.println("Failed to retrieve Guardian ID.");
+                        //System.out.println("Failed to retrieve Guardian ID.");
                     }
                 }
             } catch (SQLException e) {
@@ -213,6 +214,7 @@ public class Client extends Record {
             }
         } finally {
             lock.writeLock().unlock();  // Release the read lock
+            //System.out.println(Thread.currentThread().getName() + " finished writing to the database from method requestGuardian");
             //System.out.println(Thread.currentThread().getName() + " finished writing to the database from method requestGuardian");
         }
         return guardian;
@@ -224,7 +226,7 @@ public class Client extends Record {
 
         staticLock.readLock().lock();  // Acquire the read lock
         try {
-            System.out.println(Thread.currentThread().getName() + " is reading from database from method validPassword");
+            //System.out.println(Thread.currentThread().getName() + " is reading from database from method validPassword");
             String selectQuery = "SELECT password FROM Client WHERE clientId = ?";
 
             try (Connection connection = DatabaseConnection.getConnection();
@@ -253,6 +255,7 @@ public class Client extends Record {
         }} finally {
             staticLock.readLock().unlock();  // Release the read lock
             //System.out.println(Thread.currentThread().getName() + " finished reading from database from method validPassword.");
+            //System.out.println(Thread.currentThread().getName() + " finished reading from database from method validPassword.");
         }
 
         return false;
@@ -262,7 +265,7 @@ public class Client extends Record {
 
             staticLock.readLock().lock();
             try {
-                System.out.println(Thread.currentThread().getName() + " is reading from database from method clientSignIn");
+                //System.out.println(Thread.currentThread().getName() + " is reading from database from method clientSignIn");
 
                     String selectQuery = "SELECT clientId, name, age, email, isOver18, guardianClientId FROM Client WHERE clientId = ?";
 
@@ -294,10 +297,10 @@ public class Client extends Record {
                 }
             } finally {
                 staticLock.readLock().unlock(); // Release the instance-level write lock
-                //System.out.println(Thread.currentThread().getName() + " finished reading to the database from method clientSignIn");
+               //System.out.println(Thread.currentThread().getName() + " finished reading to the database from method clientSignIn");
             }
         } else {
-            System.out.println("Sign-in failed. Cannot create client object.");
+            System.out.println("Sign-in failed.");
         }
 
         return null; // Return null if sign-in fails or client data is not retrieved
@@ -336,7 +339,7 @@ public class Client extends Record {
 
         lock.readLock().lock();
         try{
-            System.out.println(Thread.currentThread().getName() + " is reading from the database from method viewOfferings");
+            //System.out.println(Thread.currentThread().getName() + " is reading from the database from method viewOfferings");
 
                 try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(query);
@@ -393,8 +396,98 @@ public class Client extends Record {
         if(!isOfferingOverlapping(offeringId)){
             addBookingToDatabase(booking);
         }else{
-            System.out.println("You cannot book an offering that overlaps in date and time with one you have already booked.");
+            System.out.println("You cannot book this offering.");
         }
+    }
+
+    public boolean isOfferingAvailable(int offeringId) {
+        // Step 1: Fetch the lessonId for the given offering
+        String fetchLessonIdQuery = "SELECT lessonId FROM Offering WHERE offeringId = ?";
+        int lessonId = -1;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(fetchLessonIdQuery)) {
+
+            preparedStatement.setInt(1, offeringId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                lessonId = resultSet.getInt("lessonId");
+            } else {
+                System.out.println("Offering ID not found.");
+                return false; // No lessonId found, cannot proceed
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching lessonId for offering: " + e.getMessage());
+            return false;
+        }
+
+        // Step 2: Fetch the capacity and numberRegistered for the lesson
+        String fetchLessonDetailsQuery = "SELECT capacity, numberRegistered FROM Lesson WHERE lessonId = ?";
+        int capacity = 0;
+        int numberRegistered = 0;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(fetchLessonDetailsQuery)) {
+
+            preparedStatement.setInt(1, lessonId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                capacity = resultSet.getInt("capacity");
+                numberRegistered = resultSet.getInt("numberRegistered");
+            } else {
+                System.out.println("Lesson ID not found.");
+                return false; // No lesson details found, cannot proceed
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching lesson details: " + e.getMessage());
+            return false;
+        }
+
+        // Step 3: Check if capacity > numberRegistered
+        if (capacity > numberRegistered) {
+            // Step 4: Update isAvailable attribute in the Offering table
+            String updateIsAvailableQuery = "UPDATE Offering SET isAvailable = FALSE WHERE offeringId = ?";
+
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(updateIsAvailableQuery)) {
+
+                preparedStatement.setInt(1, offeringId);
+                int rowsUpdated = preparedStatement.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    System.out.println("You just got the last spot on this offering: " + offeringId);
+                } else {
+                    System.out.println("Failed to update isAvailable for offering ID: " + offeringId);
+                }
+            } catch (SQLException e) {
+                System.out.println("Error updating isAvailable attribute: " + e.getMessage());
+            }
+
+            // Step 5: Increment numberRegistered in the Lesson table
+            String incrementRegisteredQuery = "UPDATE Lesson SET numberRegistered = numberRegistered + 1 WHERE lessonId = ?";
+
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(incrementRegisteredQuery)) {
+
+                preparedStatement.setInt(1, lessonId);
+                int rowsUpdated = preparedStatement.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    //System.out.println("numberRegistered incremented successfully for lesson ID: " + lessonId);
+                } else {
+                    System.out.println("Failed to increment numberRegistered for lesson ID: " + lessonId);
+                }
+            } catch (SQLException e) {
+                System.out.println("Error incrementing numberRegistered: " + e.getMessage());
+            }
+
+            return true; // Offering is available
+        }
+
+        System.out.println("Offering is not available for booking: FULL");
+        return false; // Offering is full
     }
 
     private void addBookingToDatabase(Booking booking) {
@@ -402,7 +495,7 @@ public class Client extends Record {
 
         lock.writeLock().lock();
         try{
-            System.out.println(Thread.currentThread().getName() + " is writing to the database from method addBookingtoDatabase");
+            //System.out.println(Thread.currentThread().getName() + " is writing to the database from method addBookingtoDatabase");
 
             try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(insertQuery)) {
@@ -424,14 +517,14 @@ public class Client extends Record {
         }
         } finally {
             lock.writeLock().unlock(); // Release the instance-level write lock
-            //System.out.println(Thread.currentThread().getName() + " finished writing to the database from method adBookingtoDatabase");
+            // System.out.println(Thread.currentThread().getName() + " finished writing to the database from method adBookingtoDatabase");
         }
     }
 
     public boolean isOfferingOverlapping(int selectedOfferingId) {
         lock.writeLock().lock();
         try{
-            System.out.println(Thread.currentThread().getName() + " is writing to the database from method isOfferingOverlapping");
+            //System.out.println(Thread.currentThread().getName() + " is writing to the database from method isOfferingOverlapping");
 
 
         // Fetch the lessonId for the selected offering.
@@ -498,7 +591,6 @@ public class Client extends Record {
                     "JOIN Lesson L ON S.scheduleId = L.scheduleId " +
                     "JOIN Offering O ON L.lessonId = O.lessonId " +
                     "WHERE O.offeringId != ?";
-            // TODO: currently excluding the current offering. Do we keep that?
 
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(checkOverlapQuery)) {
@@ -524,6 +616,7 @@ public class Client extends Record {
             }
             } finally {
             lock.writeLock().unlock();
+            //System.out.println(Thread.currentThread().getName() + " finished writing to database from method isOfferingOverlapping.");
             //System.out.println(Thread.currentThread().getName() + " finished writing to database from method isOfferingOverlapping.");
         }
         System.out.println("No Schedule Overlap!");
